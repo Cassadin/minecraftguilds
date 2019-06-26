@@ -1,0 +1,19 @@
+{
+    "item.minecraftguilds.copper_coin": "Copper Coin",
+    "item.minecraftguilds.silver_coin": "Silver Coin",
+    "item.minecraftguilds.gold_coin": "Gold Coin",
+
+    "block.minecraftguilds.example": "Exampleblock",
+
+    "key.guild.category": "Minecraft Guilds",
+    "key.guild.desc": "Guildwindow",
+
+    "guild.create_header": "Create Guild",
+    "guild.tick": "✔",
+    "guild.cross": "✖",
+    "guild.invites": "Invites",
+	
+    "guild.tab.overview": "Overview",
+    "guild.tab.members": "Members"
+	
+}

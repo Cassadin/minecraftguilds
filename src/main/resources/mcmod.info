@@ -1,0 +1,16 @@
+[
+{
+  "modid": "mcg",
+  "name": "MineCraft Guilds",
+  "description": "Erstelle Gilden in Minecraft",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["ChiroxT"],
+  "credits": "The Forge and FML guys, for making this example",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

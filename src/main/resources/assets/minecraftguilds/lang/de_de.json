@@ -1,0 +1,26 @@
+{
+    "item.minecraftguilds.copper_coin": "Kupfermünze",
+    "item.minecraftguilds.silver_coin": "Silbermünze",
+    "item.minecraftguilds.gold_coin": "Goldmünze",
+
+    "block.minecraftguilds.example": "Beispielblock",
+
+    "key.guild.category": "Minecraft Guilds",
+    "key.guild.desc": "Gildenfenster",
+
+    "guild.create_header": "Gilde Gründen",
+    "guild.tick": "✔",
+    "guild.cross": "✖",
+    "guild.invites": "Einladungen",
+	
+    "guild.tab.overview": "Übersicht",
+    "guild.tab.members": "Mitglieder",
+	
+	"guild.claim.enter.danger": "Gefahr! Du betritts nun das Gebiet der Gilde %s.",
+	"guild.claim.enter.save": "Du bist nun in sicherheit.",
+	"guild.claim.leave.danger": "Du verlässt nun das Gebiet der Gilde %s.",
+	"guild.claim.leave.save": "Du verlässt nun das sichere Gebiet."
+
+
+
+}

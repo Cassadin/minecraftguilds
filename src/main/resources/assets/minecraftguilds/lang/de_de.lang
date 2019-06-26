@@ -1,0 +1,14 @@
+# Items
+item.copper_coin.name=Kupfermünze
+item.silver_coin.name=Silbermünze
+item.gold_coin.name=Goldmünze
+
+# Blocks
+tile.example.name=Beispielblock
+
+# CreativeTabs
+itemGroup.minecraftguilds=datatrend
+
+# KeyBindings
+key.datatrend.category=datatrend
+key.guild.desc=Gildenmenü
