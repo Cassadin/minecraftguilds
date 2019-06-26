@@ -2,12 +2,10 @@ package de.treinke.minecraftguilds.Events;
 
 import com.google.gson.Gson;
 import de.treinke.minecraftguilds.Items.GuildItems;
+import de.treinke.minecraftguilds.network.Messages.GuildDonation;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import de.treinke.minecraftguilds.Main;
-import de.treinke.minecraftguilds.network.NetworkActions;
-import de.treinke.minecraftguilds.network.NetworkMessage;
-import de.treinke.minecraftguilds.network.NetworkObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -144,16 +142,11 @@ public class ClaimEvents {
                             player.inventory.hasItemStack(new ItemStack(GuildItems.SILVER_COID))||
                             player.inventory.hasItemStack(new ItemStack(GuildItems.GOLD_COIN)))
                     {
-                        /*int amount = player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.COPPER_COIN,-1);
-                        amount += player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.SILVER_COID,-1)*10;
-                        amount += player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.GOLD_COIN,-1)*100;
+                        player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.COPPER_COIN,-1);
+                        player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.SILVER_COID,-1);
+                        player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.GOLD_COIN,-1);
 
-                        LOGGER.debug("Spenden: "+amount);*/
-
-                        NetworkObject answer = new NetworkObject();
-                        answer.action = NetworkActions.GuildDonation;
-                        //answer.values = ""+amount;
-                        Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(answer)));
+                        Main.NETWORK.sendToServer(new GuildDonation());
                     }
                 }
                 else

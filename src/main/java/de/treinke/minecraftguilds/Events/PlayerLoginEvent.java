@@ -2,12 +2,12 @@ package de.treinke.minecraftguilds.Events;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import de.treinke.minecraftguilds.network.Messages.GuildCheckAnswer;
+import de.treinke.minecraftguilds.network.Messages.GuildClaimList;
+import de.treinke.minecraftguilds.network.Messages.GuildInvitesAnswer;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import de.treinke.minecraftguilds.Main;
-import de.treinke.minecraftguilds.network.NetworkActions;
-import de.treinke.minecraftguilds.network.NetworkMessage;
-import de.treinke.minecraftguilds.network.NetworkObject;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,30 +29,15 @@ public class PlayerLoginEvent {
             Main.proxy.setServer(event.getPlayer().getServer());
 
             // Gildencheck
-            NetworkObject answer = new NetworkObject();
-            answer.action = NetworkActions.GuildCheckAnswer;
-            answer.values = Main.proxy.getPlayerGuild(event.getPlayer().getName().getString());
-            Main.NETWORK.sendTo(new NetworkMessage((new Gson()).toJson(answer)),(ServerPlayerEntity) event.getPlayer());
+            String guild = Main.proxy.getPlayerGuild(event.getPlayer().getName().getString());
+            Main.NETWORK.sendTo(new GuildCheckAnswer(guild),(ServerPlayerEntity) event.getPlayer());
 
 
             // Invites
-            if(answer.values != null)
-            {
-                List<String> invs = Main.proxy.getInvites(event.getPlayer().getName().getString());
+            if(guild != null)
+                Main.NETWORK.sendTo(new GuildInvitesAnswer(Main.proxy.getInvites(event.getPlayer().getName().getString())),(ServerPlayerEntity) event.getPlayer());
 
-                answer.action = NetworkActions.GuildInvitesAnswer;
-                answer.values = (new Gson()).toJson(invs, new TypeToken<List<String>>() {}.getType());//.replace("\"", "\\\"");
-
-                Main.NETWORK.sendTo(new NetworkMessage((new Gson()).toJson(answer)),(ServerPlayerEntity) event.getPlayer());
-            }
-
-
-            Guild.all_claims = Main.proxy.getGuildClaims();
-
-            answer = new NetworkObject();
-            answer.action = NetworkActions.GuildClaimList;
-            answer.values = (new Gson()).toJson(Guild.all_claims,new TypeToken<List<Claim>>() {}.getType());
-            Main.NETWORK.sendTo(new NetworkMessage((new Gson()).toJson(answer)),(ServerPlayerEntity) event.getPlayer());
+            Main.NETWORK.sendTo(new GuildClaimList(Main.proxy.getGuildClaims()),(ServerPlayerEntity) event.getPlayer());
         }
     }
 }

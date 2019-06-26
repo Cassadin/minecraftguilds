@@ -1,22 +1,12 @@
 package de.treinke.minecraftguilds.network;
 
-import de.treinke.minecraftguilds.Main;
-import net.minecraft.entity.player.PlayerEntity;
+import de.treinke.minecraftguilds.network.Messages.*;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import org.lwjgl.system.windows.MSG;
-
-import java.nio.ByteBuffer;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class SimpleNetworkWrapper {
 
@@ -42,7 +32,20 @@ public class SimpleNetworkWrapper {
 
     public void registerPackets()
     {
-        net.registerMessage(ID++, NetworkMessage.class, NetworkMessage::encode, NetworkMessage::decode, NetworkMessage.Handler::handle);
+        net.registerMessage(ID++, GuildAccept.class, GuildAccept::encode, GuildAccept::decode, GuildAccept.Handler::handle);
+        net.registerMessage(ID++, GuildCheck.class, GuildCheck::encode, GuildCheck::decode, GuildCheck.Handler::handle);
+        net.registerMessage(ID++, GuildCheckAnswer.class, GuildCheckAnswer::encode, GuildCheckAnswer::decode, GuildCheckAnswer.Handler::handle);
+        net.registerMessage(ID++, GuildClaim.class, GuildClaim::encode, GuildClaim::decode, GuildClaim.Handler::handle);
+        net.registerMessage(ID++, GuildClaimList.class, GuildClaimList::encode, GuildClaimList::decode, GuildClaimList.Handler::handle);
+        net.registerMessage(ID++, GuildCreate.class, GuildCreate::encode, GuildCreate::decode, GuildCreate.Handler::handle);
+        net.registerMessage(ID++, GuildDemote.class, GuildDemote::encode, GuildDemote::decode, GuildDemote.Handler::handle);
+        net.registerMessage(ID++, GuildDonation.class, GuildDonation::encode, GuildDonation::decode, GuildDonation.Handler::handle);
+        net.registerMessage(ID++, GuildInvites.class, GuildInvites::encode, GuildInvites::decode, GuildInvites.Handler::handle);
+        net.registerMessage(ID++, GuildInvitesAnswer.class, GuildInvitesAnswer::encode, GuildInvitesAnswer::decode, GuildInvitesAnswer.Handler::handle);
+        net.registerMessage(ID++, GuildInviteUser.class, GuildInviteUser::encode, GuildInviteUser::decode, GuildInviteUser.Handler::handle);
+        net.registerMessage(ID++, GuildKick.class, GuildKick::encode, GuildKick::decode, GuildKick.Handler::handle);
+        net.registerMessage(ID++, GuildPromote.class, GuildPromote::encode, GuildPromote::decode, GuildPromote.Handler::handle);
+        net.registerMessage(ID++, GuildRefuse.class, GuildRefuse::encode, GuildRefuse::decode, GuildRefuse.Handler::handle);
     }
 
 

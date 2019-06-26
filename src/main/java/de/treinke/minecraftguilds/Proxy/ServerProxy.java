@@ -14,12 +14,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.treinke.minecraftguilds.Events.ClaimEvents;
 import de.treinke.minecraftguilds.Events.MonsterDropEvent;
 import de.treinke.minecraftguilds.Events.PlayerLoginEvent;
+import de.treinke.minecraftguilds.network.Messages.GuildCheckAnswer;
+import de.treinke.minecraftguilds.network.Messages.GuildClaimList;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import de.treinke.minecraftguilds.Main;
-import de.treinke.minecraftguilds.network.NetworkActions;
-import de.treinke.minecraftguilds.network.NetworkMessage;
-import de.treinke.minecraftguilds.network.NetworkObject;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.*;
 import net.minecraft.network.play.server.SChatPacket;
@@ -157,18 +156,16 @@ public class ServerProxy implements IProxy {
 
 			ServerPlayerEntity player = null;
 
-			NetworkObject answer = new NetworkObject();
-			answer.action = NetworkActions.GuildCheckAnswer;
-			answer.values = null;
+			String guild = null;
 
 			for( int i = 0; i < players.size(); i++)
 			{
 				player = SERVER.getPlayerList().getPlayerByUsername(players.get(i));
 				if(player != null)
 				{
-					if(answer.values == null)
-						answer.values = Main.proxy.getPlayerGuild(player.getName().getString());
-					Main.NETWORK.sendTo(new NetworkMessage((new Gson()).toJson(answer)), player);
+					if(guild == null)
+						guild = Main.proxy.getPlayerGuild(player.getName().getString());
+					Main.NETWORK.sendTo(new GuildCheckAnswer(guild), player);
 				}
 			}
 		}
@@ -176,17 +173,11 @@ public class ServerProxy implements IProxy {
 	
 	
 	private void refresh_all_claims() {
-
-		Guild.all_claims = Main.proxy.getGuildClaims();
-
-		NetworkObject answer = new NetworkObject();
-		answer.action = NetworkActions.GuildClaimList;
-		answer.values = (new Gson()).toJson(Guild.all_claims,new TypeToken<List<Claim>>() {}.getType());
-
+		String claims = new Gson().toJson(Main.proxy.getGuildClaims(),new TypeToken<List<Claim>>() {}.getType());
 
 		for(ServerPlayerEntity player : SERVER.getPlayerList().getPlayers())
 		{
-			Main.NETWORK.sendTo(new NetworkMessage((new Gson()).toJson(answer)),player);
+			Main.NETWORK.sendTo(new GuildClaimList(claims),player);
 		}
 
 	}
@@ -332,7 +323,7 @@ public class ServerProxy implements IProxy {
 		for(int i = 0; i < Guild.list.size(); i++)
 			for(int j = 0; j < Guild.list.get(i).claims.size(); j++)
 				claims.add(Guild.list.get(i).claims.get(j));
-
+			Guild.all_claims = claims;
 		return claims;
 	}
 
@@ -371,12 +362,8 @@ public class ServerProxy implements IProxy {
 
 
 		if(player != null)
-		{
-			NetworkObject answer = new NetworkObject();
-			answer.action = NetworkActions.GuildCheckAnswer;
-			answer.values = null;
-			Main.NETWORK.sendTo(new NetworkMessage((new Gson()).toJson(answer)),player);
-		}
+			Main.NETWORK.sendTo(new GuildCheckAnswer(),player);
+
 
 		int index = findGuildIndex(getPlayerGuildName(name));
 		if(index > -1)

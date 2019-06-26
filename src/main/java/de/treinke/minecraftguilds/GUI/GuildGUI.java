@@ -2,9 +2,7 @@ package de.treinke.minecraftguilds.GUI;
 
 import com.google.gson.Gson;
 import de.treinke.minecraftguilds.Main;
-import de.treinke.minecraftguilds.network.NetworkActions;
-import de.treinke.minecraftguilds.network.NetworkMessage;
-import de.treinke.minecraftguilds.network.NetworkObject;
+import de.treinke.minecraftguilds.network.Messages.*;
 import de.treinke.minecraftguilds.objects.GuiButton;
 import de.treinke.minecraftguilds.objects.GuiTextField;
 import de.treinke.minecraftguilds.objects.Guild;
@@ -95,14 +93,10 @@ public class GuildGUI extends Screen {
     public void initGui()
     {
         if(Guild.MyGuild == null)
-        {
-            NetworkObject answer = new NetworkObject();
-            answer.action = NetworkActions.GuildCheck;
-            Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(answer)));
-
-        }else {
+            Main.NETWORK.sendToServer(new GuildCheck());
+        else
             init_with_guild = true;
-        }
+
         load_invites();
         refreshed = true;
     }
@@ -410,66 +404,39 @@ public class GuildGUI extends Screen {
             GuiButton button = (GuiButton) p_button;
 
             button.active = false;
-            NetworkObject na = null;
             switch (button.id) {
                 case BTN_CREATE:
                     String Gildenname = text.getText();
-                    na = new NetworkObject();
-                    na.action = NetworkActions.GuildCreate;
-                    na.values = Gildenname;
 
-                    Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
+                    Main.NETWORK.sendToServer(new GuildCreate(Gildenname));
                     Main.proxy.createGuild(Gildenname, this.minecraft.player);
 
                     this.minecraft.displayGuiScreen(new GuildGUI());
                     break;
                 case BTN_ACCEPT:
-                    na = new NetworkObject();
-                    na.action = NetworkActions.GuildAccept;
-                    na.values = invite_accepts.get(button);
-                    Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
+                    Main.NETWORK.sendToServer(new GuildAccept(invite_accepts.get(button)));
                     buttons.clear();
                     break;
                 case BTN_REFUSE:
-                    na = new NetworkObject();
-                    na.action = NetworkActions.GuildRefuse;
-                    na.values = invite_refuse.get(button);
-                    Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
-
-                    Guild.single_user_invites.remove(na.values);
-
+                    Main.NETWORK.sendToServer(new GuildRefuse(invite_refuse.get(button)));
+                    Guild.single_user_invites.remove(invite_refuse.get(button));
                     load_invites();
                     break;
                 case BTN_PROMOTE:
-                    na = new NetworkObject();
-                    na.action = NetworkActions.GuildPromote;
-                    na.values = promote_demote.get(button);
-                    Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
+                    Main.NETWORK.sendToServer(new GuildPromote(promote_demote.get(button)));
                     break;
                 case BTN_DEMOTE:
-                    na = new NetworkObject();
-                    na.action = NetworkActions.GuildDemote;
-                    na.values = promote_demote.get(button);
-                    Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
+                    Main.NETWORK.sendToServer(new GuildDemote(promote_demote.get(button)));
                     break;
                 case BTN_KICK:
-                    na = new NetworkObject();
-                    na.action = NetworkActions.GuildKick;
-                    na.values = kick.get(button);
-                    Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
+                    Main.NETWORK.sendToServer(new GuildKick(kick.get(button)));
                     break;
                 case BTN_CLAIM:
-                    na = new NetworkObject();
-                    na.action = NetworkActions.GuildClaim;
-                    na.values = Guild.MyGuild.name;
-                    Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
+                    Main.NETWORK.sendToServer(new GuildClaim(Guild.MyGuild.name));
                     break;
                 case BTN_INVITE:
-                    if (text_invite.getText().matches("[a-zA-Z0-9]{1,16}")) {
-                        na = new NetworkObject();
-                        na.action = NetworkActions.GuildInviteUser;
-                        na.values = "[\"" + Guild.MyGuild.name + "\",\"" + text_invite.getText() + "\"]";
-                        Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
+                    if (text_invite.getText().matches("[a-zA-Z0-9_]{1,16}")) {
+                        Main.NETWORK.sendToServer(new GuildInviteUser("[\"" + Guild.MyGuild.name + "\",\"" + text_invite.getText() + "\"]"));
                         text_invite.setText("");
                     }
                 default:
@@ -487,10 +454,7 @@ public class GuildGUI extends Screen {
 
     public void load_invites()
     {
-        NetworkObject na = new NetworkObject();
-        na.action = NetworkActions.GuildInvites;
-        Main.NETWORK.sendToServer(new NetworkMessage((new Gson()).toJson(na)));
-
+        Main.NETWORK.sendToServer(new GuildInvites());
         init();
     }
 
