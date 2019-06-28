@@ -1,6 +1,5 @@
 package de.treinke.minecraftguilds.Events;
 
-import com.google.gson.Gson;
 import de.treinke.minecraftguilds.Items.GuildItems;
 import de.treinke.minecraftguilds.network.Messages.GuildDonation;
 import de.treinke.minecraftguilds.objects.Claim;
@@ -117,7 +116,7 @@ public class ClaimEvents {
     }
 
     
-    public static void showMessage(PlayerEntity player, int chunk_x, int chunk_z)
+    public static void showMessage(PlayerEntity player, int chunk_x, int chunk_z, boolean force)
     {
 
         int x = chunk_x;
@@ -127,7 +126,7 @@ public class ClaimEvents {
         List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim == dim).collect(Collectors.toList());
         if(lst.size() > 0)
         {
-            if(!lst.get(0).guild.equals(Guild.current_claim_owner))
+            if(!lst.get(0).guild.equals(Guild.current_claim_owner)||force)
             {
                 Guild.current_claim_owner = lst.get(0).guild;
                 boolean own = false;
@@ -149,9 +148,9 @@ public class ClaimEvents {
                         Main.NETWORK.sendToServer(new GuildDonation());
                     }
                 }
-                else
-                    player.sendMessage(new StringTextComponent(String.format(I18n.format("guild.claim.enter.danger", new Object[0]),lst.get(0).guild)).setStyle(new Style().setBold(true).setColor(TextFormatting.RED)));
-
+                else {
+                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.enter.danger", lst.get(0).guild)).setStyle(new Style().setBold(true).setColor(TextFormatting.RED)));
+                }
             }
         }else {
             if(Guild.current_claim_owner.length() > 0)
@@ -164,7 +163,7 @@ public class ClaimEvents {
                 if(own)
                     player.sendMessage(new StringTextComponent(I18n.format("guild.claim.leave.save", new Object[0])));
                 else {
-                    player.sendMessage(new StringTextComponent(String.format(I18n.format("guild.claim.leave.danger", new Object[0]), Guild.current_claim_owner)));
+                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.leave.danger",  Guild.current_claim_owner)));
                 }
                 Guild.current_claim_owner = "";
             }
@@ -178,7 +177,7 @@ public class ClaimEvents {
     {
         if(event.getEntity() instanceof PlayerEntity)
             if(event.getEntity() == Minecraft.getInstance().player)
-                showMessage(((PlayerEntity)event.getEntity()),event.getNewChunkX(),event.getNewChunkZ());
+                showMessage(((PlayerEntity)event.getEntity()),event.getNewChunkX(),event.getNewChunkZ(), false);
 
     }
 

@@ -41,13 +41,15 @@ public class ServerProxy implements IProxy {
 	public void init() {
 		this.side = "SERVER";
 
-		this.loadGuilds();
-
 		MinecraftForge.EVENT_BUS.register(new MonsterDropEvent());
 		MinecraftForge.EVENT_BUS.register(new PlayerLoginEvent());
 		MinecraftForge.EVENT_BUS.register(new ClaimEvents());
 	}
 
+	@Override
+	public void serverStarted() {
+		this.loadGuilds();
+	}
 
 	@Override
 	public boolean isGuildPlayerOnline(String guild_name) {
@@ -58,7 +60,6 @@ public class ServerProxy implements IProxy {
 				if(Guild.list.get(index).getMember(player.getName().getString()))
 					return true;
 		}
-
 
 		return false;
 	}
@@ -100,19 +101,7 @@ public class ServerProxy implements IProxy {
 		if(lst.size() > 0)
 			g = lst.get(0).name;
 
-
 		return g;
-	}
-
-	@Override
-	public void createGuild(String guild_name, PlayerEntity player) {
-		Guild.list.add(new Guild(guild_name,player.getName().getString()));
-
-		final int x = (player.getPosition().getX())/16+(player.getPosition().getX()<0?-1:0);
-		final int z = (player.getPosition().getZ())/16+(player.getPosition().getZ()<0?-1:0);
-
-		addClaim(guild_name,player.dimension.getId(),x,z);
-
 	}
 
 	@Override
@@ -189,7 +178,8 @@ public class ServerProxy implements IProxy {
 		return -1;
 	}
 
-	private void saveGuilds()
+	@Override
+	public void saveGuilds()
 	{
 		Gson g = new Gson();
 		System.out.println("Save Guilds");
@@ -217,6 +207,11 @@ public class ServerProxy implements IProxy {
 		{
 			System.out.println("Fehler beim Speichern der Gildeninformationen: "+ex.getMessage());
 		}
+
+	}
+
+	@Override
+	public void showClaimMessage(boolean b) {
 
 	}
 

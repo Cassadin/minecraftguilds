@@ -14,6 +14,12 @@
     "guild.invites": "Invites",
 	
     "guild.tab.overview": "Overview",
-    "guild.tab.members": "Members"
+    "guild.tab.members": "Members",
+    "guild.tab.map": "Map",
+	
+	"guild.claim.enter.danger": "Danger! You are now entering the territory of %s.",
+	"guild.claim.enter.save": "You are now save.",
+	"guild.claim.leave.danger": "You are now leaving the territoy of %s.",
+	"guild.claim.leave.save": "You are now leaving your save zone ."
 	
 }

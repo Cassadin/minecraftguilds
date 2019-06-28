@@ -2,6 +2,7 @@ package de.treinke.minecraftguilds.network.Messages;
 
 import de.treinke.minecraftguilds.*;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
@@ -55,12 +56,11 @@ public class GuildAccept{
     public static class Handler {
         public static void handle(GuildAccept message, Supplier<NetworkEvent.Context> ctx)
         {
-            if(Main.proxy.acceptGuild(message.data, ctx.get().getSender().getName().getString()))
-            {
-                String guild = Main.proxy.getPlayerGuild(ctx.get().getSender().getName().getString());
-                if(guild != null)
-                    Main.NETWORK.sendTo(new GuildCheckAnswer(guild),ctx.get().getSender());
-            }
+            ServerPlayerEntity player = ctx.get().getSender();
+
+            if(Main.proxy.acceptGuild(message.data, player.getName().getString()))
+                Main.NETWORK.sendTo(new GuildCheckAnswer(Main.proxy.getPlayerGuild(player.getName().getString())),player);
+
         }
     }
 }

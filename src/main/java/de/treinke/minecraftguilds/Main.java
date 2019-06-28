@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -39,10 +40,17 @@ public class Main {
 
 
     public Main() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        /*FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerStarting);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerStarted);*/
+
+        MinecraftForge.EVENT_BUS.addListener(this::setup);
+        MinecraftForge.EVENT_BUS.addListener(this::enqueueIMC);
+        MinecraftForge.EVENT_BUS.addListener(this::processIMC);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -55,10 +63,12 @@ public class Main {
 
     private void processIMC(final InterModProcessEvent event) {}
 
-    public void onServerStarting(final FMLServerStartingEvent e)
+    private void onServerStarting(final FMLServerStartingEvent e)
     {
         GuildCommands.register(e.getCommandDispatcher());
     }
+
+    private void onServerStarted(final FMLServerStartedEvent e) {proxy.serverStarted();};
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MODID)
     public static class RegistryEvents {

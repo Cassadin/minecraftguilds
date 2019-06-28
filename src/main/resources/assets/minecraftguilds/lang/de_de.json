@@ -15,6 +15,7 @@
 	
     "guild.tab.overview": "Übersicht",
     "guild.tab.members": "Mitglieder",
+    "guild.tab.map": "Karte",
 	
 	"guild.claim.enter.danger": "Gefahr! Du betritts nun das Gebiet der Gilde %s.",
 	"guild.claim.enter.save": "Du bist nun in sicherheit.",

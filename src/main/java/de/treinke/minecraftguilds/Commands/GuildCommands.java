@@ -7,6 +7,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.treinke.minecraftguilds.Main;
 
+import de.treinke.minecraftguilds.network.Messages.GuildCheckAnswer;
+import de.treinke.minecraftguilds.objects.Guild;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.MessageArgument;
@@ -41,6 +43,23 @@ public class GuildCommands {
                             return 0;
                         })
         );
+
+        dispatcher.register((LiteralArgumentBuilder)Commands.literal("guilddelete")
+                        .executes(GuildCommands::delete)
+        );
+    }
+
+    private static int delete(CommandContext<CommandSource> context) {
+
+        if(!(context.getSource().getEntity() instanceof ServerPlayerEntity)) {
+            Guild.list.clear();
+            Guild.all_claims.clear();
+
+            Main.proxy.saveGuilds();
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     private static int execute(CommandContext<CommandSource> context) throws CommandSyntaxException {

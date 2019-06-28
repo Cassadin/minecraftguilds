@@ -5,6 +5,7 @@ import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import de.treinke.minecraftguilds.Main;
 import net.minecraft.item.Item;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

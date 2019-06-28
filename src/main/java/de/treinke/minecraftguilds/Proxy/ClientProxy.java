@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -87,8 +88,12 @@ public class ClientProxy implements IProxy {
 	}
 
 	@Override
-	public void createGuild(String guild_name, PlayerEntity player) {
-		// TODO Auto-generated method stub
+	public void serverStarted() {
+
+	}
+
+	@Override
+	public void saveGuilds() {
 
 	}
 
@@ -158,9 +163,14 @@ public class ClientProxy implements IProxy {
 	}
 
 	@Override
-	public void showClaimMessage() {
+	public void showClaimMessage(boolean force) {
 		PlayerEntity player = Minecraft.getInstance().player;
-		ClaimEvents.showMessage(player, player.getPosition().getX()/16, player.getPosition().getZ()/16);
+		ClaimEvents.showMessage(player, player.getPosition().getX()/16, player.getPosition().getZ()/16,force);
+	}
+
+	@Override
+	public void showClaimMessage() {
+		showClaimMessage(false);
 	}
 	@Override
 	public void setServer(MinecraftServer server) {

@@ -3,10 +3,7 @@ package de.treinke.minecraftguilds.GUI;
 import com.google.gson.Gson;
 import de.treinke.minecraftguilds.Main;
 import de.treinke.minecraftguilds.network.Messages.*;
-import de.treinke.minecraftguilds.objects.GuiButton;
-import de.treinke.minecraftguilds.objects.GuiTextField;
-import de.treinke.minecraftguilds.objects.Guild;
-import de.treinke.minecraftguilds.objects.TexturedButton;
+import de.treinke.minecraftguilds.objects.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -59,8 +56,8 @@ public class GuildGUI extends Screen {
 
 
     private static final ResourceLocation TEXTURES_GUILD = new ResourceLocation(Main.MODID,"textures/gui/guild/guild.png");
-    int guild_width = 169;
-    int guild_height = 230;
+    int guild_width = 165;
+    int guild_height = 181;
     int guild_centerx = 0;
     int guild_centery = 0;
     int guild_tabs = 60;
@@ -167,18 +164,13 @@ public class GuildGUI extends Screen {
 
                         if(canClaim)
                         {
-                            this.btn_claim = this.addButton(new GuiButton(BTN_CLAIM,(width/2)-(guild_width/2)+(guild_width-24),(height/2)-(invite_height/2)+154,20,20, I18n.format("guild.tick", new Object[0]), (p_213026_1_) -> {
+                            this.btn_claim = this.addButton(new GuiButton(BTN_CLAIM,(width/2)-(guild_width/2)+(guild_width-24),((height/2)-(invite_height/2))+(guild_height-24),20,20, I18n.format("guild.tick", new Object[0]), (p_213026_1_) -> {
                                 this.actionPerformed(p_213026_1_);
                             }));
                         }
 
                         break;
                     case PAGE_MEMBERS:
-                        if(Guild.MyGuild.leader.equals(Minecraft.getInstance().player.getName().getString())) {
-                            text_invite = new GuiTextField(TXT_INVITE, this.font, (width / 2) - (guild_width / 2) + (guild_width - 82), (height / 2) - (guild_height / 2) + 154, 57, 20);
-                            text_invite.setMaxStringLength(16);
-                            text_invite.setText("");
-                        }
 
                         boolean is_leader = (Guild.MyGuild.leader.equals(Minecraft.getInstance().player.getName().getString()));
                         boolean is_offi = false;
@@ -191,11 +183,12 @@ public class GuildGUI extends Screen {
 
                         if(is_leader)
                         {
+
                             for(int i = 0; i < Guild.MyGuild.offi.length; i++)
                                 if(Guild.MyGuild.offi[i] != null)
                                     if(Guild.MyGuild.offi[i].length() > 0)
                                             if (free_member > 0 && is_leader) {
-                                                TexturedButton btn_acc = (TexturedButton) this.addButton(new TexturedButton(BTN_DEMOTE, (width / 2) - (guild_width / 2) + (guild_tabs / 2) + 130, (height / 2) - (guild_height / 2) + 50 + (i * 10), 180, 16, 10, 10, USED_TEXTURES, (p_213026_1_) -> {
+                                                TexturedButton btn_acc = (TexturedButton) this.addButton(new TexturedButton(BTN_DEMOTE, (width / 2) - (guild_width / 2) + (guild_tabs / 2) + 130, (height / 2) - (guild_height / 2) + 50 + (i * 10), 175, 21, 10, 10, USED_TEXTURES, (p_213026_1_) -> {
                                                     this.actionPerformed(p_213026_1_);
                                                 }));
                                                 promote_demote.put(btn_acc, Guild.MyGuild.offi[i]);
@@ -207,18 +200,23 @@ public class GuildGUI extends Screen {
                                     if(Guild.MyGuild.member[i].length() > 0)
                                         if(free_offi > 0)
                                         {
-                                            TexturedButton btn_acc = (TexturedButton)this.addButton(new TexturedButton(BTN_PROMOTE,(width/2)-(guild_width/2)+(guild_tabs/2)+130,(height/2)-(guild_height/2)+88+(i*10),170,16,10,10,USED_TEXTURES, (p_213026_1_) -> {
+                                            TexturedButton btn_acc = (TexturedButton)this.addButton(new TexturedButton(BTN_PROMOTE,(width/2)-(guild_width/2)+(guild_tabs/2)+130,(height/2)-(guild_height/2)+88+(i*10),165,21,10,10,USED_TEXTURES, (p_213026_1_) -> {
                                                 this.actionPerformed(p_213026_1_);
                                             }));
                                             promote_demote.put(btn_acc,Guild.MyGuild.member[i]);
                                         }
 
 
-                            if(free_member > 0)
-                                this.addButton(new GuiButton(BTN_INVITE,(width/2)-(guild_width/2)+(guild_width-24),(height/2)-(invite_height/2)+154,20,20,I18n.format("guild.tick", new Object[0]), (p_213026_1_) -> {
+                            if(free_member > 0) {
+                                this.addButton(new GuiButton(BTN_INVITE, ((width - guild_width - guild_tabs) / 2) + (guild_width + guild_tabs - 24), ((height - guild_height) / 2) + (guild_height - 24), 20, 20, I18n.format("guild.tick", new Object[0]), (p_213026_1_) -> {
                                     this.actionPerformed(p_213026_1_);
                                 }));
 
+                                text_invite = new GuiTextField(TXT_INVITE, this.font, ((width - guild_width - guild_tabs) / 2)+guild_tabs +75, ((height - guild_height) / 2) + (guild_height - 24), guild_width-102, 20);
+                                text_invite.setMaxStringLength(16);
+                                text_invite.setText("");
+
+                            }
                         }
 
 
@@ -226,7 +224,7 @@ public class GuildGUI extends Screen {
                             if(Guild.MyGuild.offi[i] != null)
                                 if(Guild.MyGuild.offi[i].length() > 0)
                                     if(is_leader||Guild.MyGuild.offi[i].equals(Minecraft.getInstance().player.getName().getString())) {
-                                        TexturedButton btn_acc = (TexturedButton) this.addButton(new TexturedButton(BTN_KICK, (width / 2) - (guild_width / 2) + (guild_tabs / 2) + 145, (height / 2) - (guild_height / 2) + 50 + (i * 10), 190, 16, 10, 10, USED_TEXTURES, (p_213026_1_) -> {
+                                        TexturedButton btn_acc = (TexturedButton) this.addButton(new TexturedButton(BTN_KICK, (width / 2) - (guild_width / 2) + (guild_tabs / 2) + 145, (height / 2) - (guild_height / 2) + 50 + (i * 10), 185, 21, 10, 10, USED_TEXTURES, (p_213026_1_) -> {
                                             this.actionPerformed(p_213026_1_);
                                         }));
                                         kick.put(btn_acc, Guild.MyGuild.offi[i]);
@@ -236,11 +234,13 @@ public class GuildGUI extends Screen {
                             if(Guild.MyGuild.member[i] != null)
                                 if(Guild.MyGuild.member[i].length() > 0)
                                     if(is_leader||is_offi||Guild.MyGuild.member[i].equals(Minecraft.getInstance().player.getName().getString())) {
-                                        TexturedButton btn_acc = (TexturedButton) this.addButton(new TexturedButton(BTN_KICK, (width / 2) - (guild_width / 2) + (guild_tabs / 2) + 145, (height / 2) - (guild_height / 2) + 88 + (i * 10), 190, 16, 10, 10, USED_TEXTURES, (p_213026_1_) -> {
+                                        TexturedButton btn_acc = (TexturedButton) this.addButton(new TexturedButton(BTN_KICK, (width / 2) - (guild_width / 2) + (guild_tabs / 2) + 145, (height / 2) - (guild_height / 2) + 88 + (i * 10), 185, 21, 10, 10, USED_TEXTURES, (p_213026_1_) -> {
                                             this.actionPerformed(p_213026_1_);
                                         }));
                                         kick.put(btn_acc, Guild.MyGuild.member[i]);
                                     }
+                        break;
+                    case PAGE_MAP:
                         break;
                 }
                 refreshed = true;
@@ -310,13 +310,26 @@ public class GuildGUI extends Screen {
                     USED_TEXTURES = TEXTURES_GUILD;
                     this.minecraft.getRenderManager().textureManager.bindTexture(USED_TEXTURES);
 
-                    blit(guild_centerx - guild_tabs, guild_centery, guild_width, 0, guild_tabs, 16);
-                    blit(guild_centerx - guild_tabs, guild_centery + 16, guild_width, 0, guild_tabs, 16);
+                    blit(guild_centerx - guild_tabs, guild_centery, guild_width, 0, guild_tabs+5, 21);
+                    blit(guild_centerx - guild_tabs, guild_centery + 21, guild_width, 0, guild_tabs, 21);
+                    blit(guild_centerx - guild_tabs, guild_centery + 42, guild_width, 0, guild_tabs, 21);
                     blit(guild_centerx, guild_centery, 0, 0, guild_width, guild_height);
 
 
                     switch (current_page) {
                         case PAGE_OVERVIEW:
+
+
+                            blit(guild_centerx +65, guild_centery + 69, 165, 31, 10, 10);
+                            blit(guild_centerx +95, guild_centery + 69, 175, 31, 10, 10);
+
+                            int money = Guild.MyGuild.cash;
+                            String kosten = ""+((Double) Math.ceil((Guild.MyGuild.claims.size() + 1) * (Guild.MyGuild.claims.size() + 1) * Guild.guild_claim_factor)).intValue();
+
+
+
+                            blit(guild_centerx +123+((""+(money/100)).length()-1)*6, guild_centery + 69, 185, 31, 10, 10);
+                            blit(guild_centerx +65+(kosten.length()-1)*6, guild_centery + 84, 185, 31, 10, 10);
 
                             drawCenteredString(this.font, "Gilde", guild_centerx + 83, guild_centery + 10, 0xFFFFFF);
 
@@ -329,7 +342,6 @@ public class GuildGUI extends Screen {
 
                             drawString(this.font, "Kasse: ", guild_centerx + 10, guild_centery + 70, 0xFFFFFF);
 
-                            int money = Guild.MyGuild.cash;
 
                             drawCenteredString(this.font, "" + (money / 100), guild_centerx + 120, guild_centery + 70, 0xFFFFFF);
                             money = (money) - ((money / 100) * 100);
@@ -340,7 +352,7 @@ public class GuildGUI extends Screen {
                             drawString(this.font, "Kosten: ", guild_centerx + 10, guild_centery + 85, 0xFFFFFF);
 
 
-                            drawCenteredString(this.font, "" + ((Double) Math.ceil((Guild.MyGuild.claims.size() + 1) * (Guild.MyGuild.claims.size() + 1) * Guild.guild_claim_factor)).intValue(), guild_centerx + 90, guild_centery + 85, 0xFFFFFF);
+                            drawCenteredString(this.font, kosten, guild_centerx + 60, guild_centery + 85, 0xFFFFFF);
 
 
                             break;
@@ -371,14 +383,18 @@ public class GuildGUI extends Screen {
                                 }
                             }
                             break;
+                        case PAGE_MAP:
+                            showClaimMap();
+                            break;
                         default:
                     }
 
                     guild_centerx = (width / 2) - (guild_width / 2) + (guild_tabs / 2);
                     guild_centery = (height / 2) - (guild_height / 2);
 
-                    drawCenteredString(this.font, I18n.format("guild.tab.overview", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 5, 0xFFFFFF);
-                    drawCenteredString(this.font, I18n.format("guild.tab.members", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 16 + 5, 0xFFFFFF);
+                    drawCenteredString(this.font, I18n.format("guild.tab.overview", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 7, 0xFFFFFF);
+                    drawCenteredString(this.font, I18n.format("guild.tab.members", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 21 + 7, 0xFFFFFF);
+                    drawCenteredString(this.font, I18n.format("guild.tab.map", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 42 + 7, 0xFFFFFF);
                 }
             }
         }catch(Exception ex)
@@ -407,11 +423,7 @@ public class GuildGUI extends Screen {
             switch (button.id) {
                 case BTN_CREATE:
                     String Gildenname = text.getText();
-
                     Main.NETWORK.sendToServer(new GuildCreate(Gildenname));
-                    Main.proxy.createGuild(Gildenname, this.minecraft.player);
-
-                    this.minecraft.displayGuiScreen(new GuildGUI());
                     break;
                 case BTN_ACCEPT:
                     Main.NETWORK.sendToServer(new GuildAccept(invite_accepts.get(button)));
@@ -475,7 +487,7 @@ public class GuildGUI extends Screen {
 
                 if(x >= centerx-guild_tabs && x < centerx)
                 {
-                    int ly = ((Double)((y-centery)/18)).intValue();
+                    int ly = ((Double)((y-centery)/23)).intValue();
 
                     switch(ly)
                     {
@@ -484,6 +496,9 @@ public class GuildGUI extends Screen {
                             break;
                         case PAGE_MEMBERS:
                             current_page = PAGE_MEMBERS;
+                            break;
+                        case PAGE_MAP:
+                            current_page = PAGE_MAP;
                             break;
                     }
                     initGui();
@@ -564,6 +579,7 @@ public class GuildGUI extends Screen {
                         if (text.isFocused())
                             text.deleteFromCursor(1);
                 }
+                updateButton();
             }else{
                 if (par1 != 256) {
                     if(text_invite != null)
@@ -614,6 +630,30 @@ public class GuildGUI extends Screen {
         final int x = (this.minecraft.player.getPosition().getX()) / 16 + (this.minecraft.player.getPosition().getX() < 0 ? -1 : 0);
         final int z = (this.minecraft.player.getPosition().getZ()) / 16 + (this.minecraft.player.getPosition().getZ() < 0 ? -1 : 0);
         final int dim = this.minecraft.player.dimension.getId();
+
+        final int dir_x = 13;
+        final int dir_z = 15;
+
+        List<Claim> claims = Guild.all_claims.stream().filter(p -> p.x >= x-dir_x && p.x <= x+dir_x && p.z >= z-dir_z && p.z <= z+dir_z && p.dim == dim).collect(Collectors.toList());
+
+        for(int fz = 0; fz < 29; fz++)
+            for(int fx = 0; fx < 25; fx++)
+            {
+                final int ffx = x-dir_x+fx+1;
+                final int ffz = z-dir_z+fz+1;
+
+                Object[] arr = claims.stream().filter(p -> p.x == ffx && p.z == ffz).toArray();
+                if(arr.length > 0) {
+                    if (((Claim) arr[0]).guild.equals(Guild.MyGuild.name))
+                        blit(guild_centerx + 7+(fx*6), guild_centery + 3+(fz*6), 209, 21, 7, 7);
+                    else
+                        blit(guild_centerx+7+(fx*6), guild_centery+3+(fz*6), 202, 21, 7, 7);
+                }else
+                    blit(guild_centerx+7+(fx*6), guild_centery+3+(fz*6), 195, 21, 7, 7);
+
+            }
+
+        blit(guild_centerx+79, guild_centery+87, 216, 21, 7, 7);
 
 
 

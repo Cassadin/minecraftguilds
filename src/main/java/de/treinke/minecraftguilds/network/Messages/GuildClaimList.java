@@ -7,6 +7,7 @@ import de.treinke.minecraftguilds.Main;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
@@ -66,7 +67,15 @@ public class GuildClaimList{
         public static void handle(GuildClaimList message, Supplier<NetworkEvent.Context> ctx)
         {
             Guild.all_claims = new Gson().fromJson(message.data, new TypeToken<List<Claim>>() {}.getType());
-            Main.proxy.showClaimMessage();
+            final int cx = (Minecraft.getInstance().player.getPosition().getX()) / 16 + (Minecraft.getInstance().player.getPosition().getX() < 0 ? -1 : 0);
+            final int cz = (Minecraft.getInstance().player.getPosition().getZ()) / 16 + (Minecraft.getInstance().player.getPosition().getZ() < 0 ? -1 : 0);
+            int dimen = Minecraft.getInstance().player.dimension.getId();
+
+            Object[] arr = Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz && p.dim == dimen).toArray();
+            if(arr.length > 0)
+                Guild.current_claim_owner = ((Claim)arr[0]).guild;
+
+            Main.proxy.showClaimMessage(true);
             GuildGUI.refreshed = false;
         }
     }

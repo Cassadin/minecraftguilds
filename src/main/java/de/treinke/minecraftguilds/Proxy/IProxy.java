@@ -8,6 +8,7 @@ import de.treinke.minecraftguilds.objects.Guild;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 
 public interface IProxy {
@@ -25,9 +26,7 @@ public interface IProxy {
 	
 	String getPlayerGuildName(String playerName);
 
-		
-	void createGuild(String guild_name, PlayerEntity player);
-	
+
 	void addClaim(String guild_name,int dim, int x, int z);
 	
 	boolean acceptGuild(String guild_name, String serverPlayer);
@@ -64,4 +63,10 @@ public interface IProxy {
 	boolean isGuildPlayerOnline(String guild);
 
     void showSide();
+
+    void serverStarted();
+
+    void saveGuilds();
+
+	void showClaimMessage(boolean b);
 }

@@ -25,7 +25,8 @@ public class GuildCheckAnswer{
     public String data = "";
 
     public GuildCheckAnswer(String toSend) {
-        this.data = toSend;
+        if(this.data != null)
+            this.data = toSend;
     }
 
 
@@ -38,7 +39,8 @@ public class GuildCheckAnswer{
     }
 
     public void toBytes(ByteBuf buf) {
-        buf.writeBytes(data.getBytes());
+        if(data != null)
+            buf.writeBytes(data.getBytes());
     }
 
 
