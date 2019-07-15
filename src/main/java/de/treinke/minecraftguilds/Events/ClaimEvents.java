@@ -218,31 +218,45 @@ public class ClaimEvents {
             if (damage.getTrueSource() != null)
                 if (damage.getTrueSource() instanceof ServerPlayerEntity) {
                     ServerPlayerEntity caused = (ServerPlayerEntity) event.getSource().getTrueSource();
-                    if(player.experienceLevel>=3&&caused.experienceLevel>=3) {
 
-                        String attacked_guild = Main.proxy.getPlayerGuildName(player.getName().getString());
-                        String attacker_guild = Main.proxy.getPlayerGuildName(caused.getName().getString());
+                    final int x = (player.getPosition().getX()) / 16 + (player.getPosition().getX() < 0 ? -1 : 0);
+                    final int z = (player.getPosition().getZ()) / 16 + (player.getPosition().getZ() < 0 ? -1 : 0);
+                    final int dim = player.dimension.getId();
 
-                        if (attacked_guild != null && attacker_guild != null) {
-                            if (attacked_guild.equals(attacker_guild))
-                                event.setCanceled(true);
-                        } else {
-                            if (attacked_guild == null)
-                                attacked_guild = "";
-                            if (attacker_guild == null)
-                                attacker_guild = "";
+                    String attacked_guild = Main.proxy.getPlayerGuildName(player.getName().getString());
+                    String attacker_guild = Main.proxy.getPlayerGuildName(caused.getName().getString());
+                    if (attacked_guild != null && attacker_guild != null) {
+                        if (attacked_guild.equals(attacker_guild))
+                        {
+                            event.setCanceled(true);
+                            return;
                         }
+                    } else {
+                        if (attacked_guild == null)
+                            attacked_guild = "";
+                        if (attacker_guild == null)
+                            attacker_guild = "";
+                    }
 
-                        final int x = (player.getPosition().getX()) / 16 + (player.getPosition().getX() < 0 ? -1 : 0);
-                        final int z = (player.getPosition().getZ()) / 16 + (player.getPosition().getZ() < 0 ? -1 : 0);
-                        final int dim = player.dimension.getId();
+                    List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim == dim).collect(Collectors.toList());
+                    String claimowner = null;
+                    if (lst.size() > 0)
+                        claimowner = lst.get(0).guild;
 
-                        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim == dim).collect(Collectors.toList());
-                        if (lst.size() > 0) {
-                            if (lst.get(0).guild.equals(attacked_guild))
+                    boolean attack_allowed = true;
+
+                    // beide Spieler mind. lv 3?
+                    attack_allowed = player.experienceLevel>=3&&caused.experienceLevel>=3;
+                    // auf dem gildengebiet einer der beiden spieler?
+                    attack_allowed = attack_allowed||attacked_guild.equals(claimowner)||attacker_guild.equals(claimowner);
+
+
+                    if(attack_allowed) {
+                        if (claimowner != null) {
+                            if (claimowner.equals(attacked_guild))
                                 event.setAmount(event.getAmount() * 0.25F);
 
-                            if (lst.get(0).guild.equals(attacker_guild))
+                            if (claimowner.equals(attacker_guild))
                                 event.setAmount(event.getAmount() * 4F);
                         }
                     }else{
