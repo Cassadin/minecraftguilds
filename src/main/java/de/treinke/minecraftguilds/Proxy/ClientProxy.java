@@ -163,6 +163,16 @@ public class ClientProxy implements IProxy {
 	}
 
 	@Override
+	public void warnGuild(String message) {
+
+	}
+
+	@Override
+	public void killplayer(ServerPlayerEntity player) {
+
+	}
+
+	@Override
 	public void showClaimMessage(boolean force) {
 		PlayerEntity player = Minecraft.getInstance().player;
 		ClaimEvents.showMessage(player, player.getPosition().getX()/16, player.getPosition().getZ()/16,force);

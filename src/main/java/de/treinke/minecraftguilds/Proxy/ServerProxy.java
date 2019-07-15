@@ -16,6 +16,7 @@ import de.treinke.minecraftguilds.Events.MonsterDropEvent;
 import de.treinke.minecraftguilds.Events.PlayerLoginEvent;
 import de.treinke.minecraftguilds.network.Messages.GuildCheckAnswer;
 import de.treinke.minecraftguilds.network.Messages.GuildClaimList;
+import de.treinke.minecraftguilds.network.Messages.GuildWarning;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import de.treinke.minecraftguilds.Main;
@@ -126,22 +127,28 @@ public class ServerProxy implements IProxy {
 		}
 	}
 
+	private List<String> getGuildPlayers(int index)
+	{
+		List<String> players = new ArrayList<>();
+		players.add(Guild.list.get(index).leader);
+		for(int i = 0; i < Guild.list.get(index).offi.length; i++)
+			if(Guild.list.get(index).offi[i]!=null)
+				if(Guild.list.get(index).offi[i].length()>0)
+					players.add(Guild.list.get(index).offi[i]);
+
+		for(int i = 0; i < Guild.list.get(index).member.length; i++)
+			if(Guild.list.get(index).member[i]!=null)
+				if(Guild.list.get(index).member[i].length()>0)
+					players.add(Guild.list.get(index).member[i]);
+				return players;
+	}
+
 	private void refresh_guilds(String name) {
 
 		int index = findGuildIndex(name);
 		if(index > -1)
 		{
-			List<String> players = new ArrayList<>();
-			players.add(Guild.list.get(index).leader);
-			for(int i = 0; i < Guild.list.get(index).offi.length; i++)
-				if(Guild.list.get(index).offi[i]!=null)
-					if(Guild.list.get(index).offi[i].length()>0)
-						players.add(Guild.list.get(index).offi[i]);
-
-			for(int i = 0; i < Guild.list.get(index).member.length; i++)
-				if(Guild.list.get(index).member[i]!=null)
-					if(Guild.list.get(index).member[i].length()>0)
-						players.add(Guild.list.get(index).member[i]);
+			List<String> players = getGuildPlayers(index);
 
 			ServerPlayerEntity player = null;
 
@@ -208,6 +215,40 @@ public class ServerProxy implements IProxy {
 			System.out.println("Fehler beim Speichern der Gildeninformationen: "+ex.getMessage());
 		}
 
+	}
+
+	@Override
+	public void killplayer(ServerPlayerEntity player) {
+
+		int index = findGuildIndex(getPlayerGuildName(player.getName().getString()));
+
+		if(index > -1) {
+			Guild.list.get(index).talents++;
+
+			this.saveGuilds();
+			refresh_guilds(Guild.list.get(index).name);
+		}
+	}
+
+	@Override
+	public void warnGuild(String name) {
+		int index = findGuildIndex(name);
+		if(index > -1) {
+			List<String> players = getGuildPlayers(index);
+
+			ServerPlayerEntity player = null;
+
+
+			for( int i = 0; i < players.size(); i++)
+			{
+				player = SERVER.getPlayerList().getPlayerByUsername(players.get(i));
+				if(player != null)
+				{
+					Main.NETWORK.sendTo(new GuildWarning(), player);
+				}
+			}
+
+		}
 	}
 
 	@Override

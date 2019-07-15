@@ -20,6 +20,7 @@ public class Guild {
     public List<String> invites = new ArrayList<>();
     public List<Claim> claims = new ArrayList<>();
     public int cash = 0;
+    public int talents = 0;
 
     public Guild(String guild_name, String serverPlayer) {
         //System.out.println("["+Main.proxy.side+"] GUILD CREATED: "+guild_name);

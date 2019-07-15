@@ -44,9 +44,9 @@ public class GuildCommands {
                         })
         );
 
-        dispatcher.register((LiteralArgumentBuilder)Commands.literal("guilddelete")
+	/*dispatcher.register((LiteralArgumentBuilder)Commands.literal("guilddelete")
                         .executes(GuildCommands::delete)
-        );
+        );*/
     }
 
     private static int delete(CommandContext<CommandSource> context) {

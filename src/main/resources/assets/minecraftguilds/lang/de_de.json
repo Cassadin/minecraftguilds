@@ -20,7 +20,8 @@
 	"guild.claim.enter.danger": "Gefahr! Du betritts nun das Gebiet der Gilde %s.",
 	"guild.claim.enter.save": "Du bist nun in sicherheit.",
 	"guild.claim.leave.danger": "Du verlässt nun das Gebiet der Gilde %s.",
-	"guild.claim.leave.save": "Du verlässt nun das sichere Gebiet."
+	"guild.claim.leave.save": "Du verlässt nun das sichere Gebiet.",
+    "guild.claim.attacked": "Deine Gilde wird angegriffen!!!"
 
 
 

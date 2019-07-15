@@ -3,11 +3,11 @@ package de.treinke.minecraftguilds.Proxy;
 
 import java.util.List;
 
+import de.treinke.minecraftguilds.network.Messages.GuildKick;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 
@@ -69,4 +69,8 @@ public interface IProxy {
     void saveGuilds();
 
 	void showClaimMessage(boolean b);
+
+    void warnGuild(String message);
+
+	void killplayer(ServerPlayerEntity player);
 }

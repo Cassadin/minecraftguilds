@@ -2,6 +2,8 @@ package de.treinke.minecraftguilds.Events;
 
 import de.treinke.minecraftguilds.Items.GuildItems;
 import de.treinke.minecraftguilds.network.Messages.GuildDonation;
+import de.treinke.minecraftguilds.network.Messages.GuildKill;
+import de.treinke.minecraftguilds.network.Messages.GuildWarningMessage;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import de.treinke.minecraftguilds.Main;
@@ -18,6 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -25,6 +28,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,14 +38,11 @@ import static de.treinke.minecraftguilds.Main.MODID;
 public class ClaimEvents {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
-
-
+    public static HashMap<String, Long> attacks = new HashMap<>();
 
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent event) {
-    {
-
+    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
         final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
         final int dim = event.getEntityPlayer().dimension.getId();
@@ -51,8 +53,18 @@ public class ClaimEvents {
             if(!lst.get(0).guild.equals(Main.proxy.getPlayerGuildName(event.getEntity().getName().getString())))
                 event.setCanceled(true);
         }
-    }}
+    }
 
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    @SubscribeEvent
+    public void onPlayerDies(LivingDeathEvent event) {
+
+        if(event.getEntityLiving() instanceof ServerPlayerEntity && event.getSource().getTrueSource() instanceof ServerPlayerEntity)
+        {
+            Main.NETWORK.sendToServer(new GuildKill(event.getSource().getTrueSource().getName().getString()));
+        }
+    }
 
 
     @OnlyIn(Dist.CLIENT)
@@ -66,20 +78,33 @@ public class ClaimEvents {
         List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim == dim).collect(Collectors.toList());
         if(lst.size() > 0)
         {
+            boolean slow_down  = false;
             if(Guild.MyGuild == null)
+                slow_down = true;
+            else {
+                if (!lst.get(0).guild.equals(Guild.MyGuild.name))
+                    slow_down = true;
+            }
+
+            if(slow_down) {
                 event.setNewSpeed(event.getOriginalSpeed()/50);
-            else
-                if(!lst.get(0).guild.equals(Guild.MyGuild.name))
-                    event.setNewSpeed(event.getOriginalSpeed()/50);
+                boolean warn = true;
+                if (attacks.containsKey(lst.get(0).guild))
+                    if (System.currentTimeMillis() - attacks.get(lst.get(0).guild) < 300000)
+                        warn = false;
+                if (warn) {
+                    attacks.put(lst.get(0).guild, System.currentTimeMillis());
+                    Main.NETWORK.sendToServer(new GuildWarningMessage(lst.get(0).guild));
+                }
+            }
         }
 
 
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
+   // @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void onBreakEvent(BlockEvent.BreakEvent event) {
-        Main.proxy.showSide();
         final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
         final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
         final int dim = event.getPlayer().dimension.getId();
@@ -90,7 +115,7 @@ public class ClaimEvents {
             String playerguild = Main.proxy.getPlayerGuildName(event.getPlayer().getName().getString());
 
             if(!lst.get(0).guild.equals(playerguild)) {
-                boolean playeronline = !Main.proxy.isGuildPlayerOnline(lst.get(0).guild);
+                boolean playeronline = Main.proxy.isGuildPlayerOnline(lst.get(0).guild);
 
                 event.setCanceled(!playeronline);
             }
@@ -188,43 +213,40 @@ public class ClaimEvents {
         if(event.getEntityLiving() instanceof  ServerPlayerEntity) {
             Main.proxy.showSide();
             ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
+
             DamageSource damage = event.getSource();
             if (damage.getTrueSource() != null)
                 if (damage.getTrueSource() instanceof ServerPlayerEntity) {
-
                     ServerPlayerEntity caused = (ServerPlayerEntity) event.getSource().getTrueSource();
+                    if(player.experienceLevel>=3&&caused.experienceLevel>=3) {
 
-                    String attacked_guild = Main.proxy.getPlayerGuildName(player.getName().getString());
-                    String attacker_guild = Main.proxy.getPlayerGuildName(caused.getName().getString());
+                        String attacked_guild = Main.proxy.getPlayerGuildName(player.getName().getString());
+                        String attacker_guild = Main.proxy.getPlayerGuildName(caused.getName().getString());
 
-                    if(attacked_guild != null && attacker_guild != null) {
-                        if (attacked_guild.equals(attacker_guild))
-                            event.setCanceled(true);
+                        if (attacked_guild != null && attacker_guild != null) {
+                            if (attacked_guild.equals(attacker_guild))
+                                event.setCanceled(true);
+                        } else {
+                            if (attacked_guild == null)
+                                attacked_guild = "";
+                            if (attacker_guild == null)
+                                attacker_guild = "";
+                        }
+
+                        final int x = (player.getPosition().getX()) / 16 + (player.getPosition().getX() < 0 ? -1 : 0);
+                        final int z = (player.getPosition().getZ()) / 16 + (player.getPosition().getZ() < 0 ? -1 : 0);
+                        final int dim = player.dimension.getId();
+
+                        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim == dim).collect(Collectors.toList());
+                        if (lst.size() > 0) {
+                            if (lst.get(0).guild.equals(attacked_guild))
+                                event.setAmount(event.getAmount() * 0.25F);
+
+                            if (lst.get(0).guild.equals(attacker_guild))
+                                event.setAmount(event.getAmount() * 4F);
+                        }
                     }else{
-                        if(attacked_guild == null)
-                            attacked_guild = "";
-                        if(attacker_guild == null)
-                            attacker_guild = "";
-                    }
-
-                    LOGGER.debug(player.getName().getString()+ " was attacked by " + damage.getTrueSource().getName().getString());
-
-
-                    final int x = (player.getPosition().getX())/16+(player.getPosition().getX()<0?-1:0);
-                    final int z = (player.getPosition().getZ())/16+(player.getPosition().getZ()<0?-1:0);
-                    final int dim = player.dimension.getId();
-
-                    List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim == dim).collect(Collectors.toList());
-                    if(lst.size() > 0)
-                    {
-
-                        // ist der angegriffene in seinem Gebiet? dann * 0.25
-                        if(lst.get(0).guild.equals(attacked_guild))
-                            event.setAmount(event.getAmount()*0.25F);
-
-                        // ist der angegriffene in meinem Gebiet? dann * 4
-                        if(lst.get(0).guild.equals(attacker_guild))
-                            event.setAmount(event.getAmount()*4F);
+                        event.setCanceled(true);
                     }
                 }
         }

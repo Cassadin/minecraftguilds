@@ -350,10 +350,9 @@ public class GuildGUI extends Screen {
                             drawCenteredString(this.font, "" + money, guild_centerx + 60, guild_centery + 70, 0xFFFFFF);
 
                             drawString(this.font, "Kosten: ", guild_centerx + 10, guild_centery + 85, 0xFFFFFF);
-
-
                             drawCenteredString(this.font, kosten, guild_centerx + 60, guild_centery + 85, 0xFFFFFF);
 
+                            drawString(this.font, "Talentmarken: "+Guild.MyGuild.talents, guild_centerx + 10, guild_centery + 100, 0xFFFFFF);
 
                             break;
                         case PAGE_MEMBERS:
