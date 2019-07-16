@@ -56,6 +56,7 @@ public class ClaimEvents {
     }
 
 
+    /*
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void onPlayerDies(LivingDeathEvent event) {
@@ -65,7 +66,7 @@ public class ClaimEvents {
             Main.NETWORK.sendToServer(new GuildKill(event.getSource().getTrueSource().getName().getString()));
         }
     }
-
+*/
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
