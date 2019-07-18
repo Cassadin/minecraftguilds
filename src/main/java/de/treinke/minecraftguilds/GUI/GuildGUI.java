@@ -534,7 +534,13 @@ public class GuildGUI extends Screen {
                 {
                     case PAGE_OVERVIEW:
                         boolean is_leader = (Guild.MyGuild.leader.equals(Minecraft.getInstance().player.getName().getString()));
-                        if(is_leader) {
+                        boolean is_offi = false;
+                        for(int i = 0; i < Guild.MyGuild.offi.length; i++)
+                            if(Guild.MyGuild.offi[i] != null)
+                                if(Guild.MyGuild.offi[i].length() > 0)
+                                    is_offi = Guild.MyGuild.offi[i].equals(Minecraft.getInstance().player.getName().getString())||is_offi;
+
+                        if(is_leader||is_offi) {
                             final int cx = (Minecraft.getInstance().player.getPosition().getX()) / 16 + (Minecraft.getInstance().player.getPosition().getX() < 0 ? -1 : 0);
                             final int cz = (Minecraft.getInstance().player.getPosition().getZ()) / 16 + (Minecraft.getInstance().player.getPosition().getZ() < 0 ? -1 : 0);
 

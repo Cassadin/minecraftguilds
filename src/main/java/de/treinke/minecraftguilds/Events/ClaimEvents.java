@@ -2,7 +2,6 @@ package de.treinke.minecraftguilds.Events;
 
 import de.treinke.minecraftguilds.Items.GuildItems;
 import de.treinke.minecraftguilds.network.Messages.GuildDonation;
-import de.treinke.minecraftguilds.network.Messages.GuildKill;
 import de.treinke.minecraftguilds.network.Messages.GuildWarningMessage;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
@@ -56,17 +55,17 @@ public class ClaimEvents {
     }
 
 
-    /*
+
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void onPlayerDies(LivingDeathEvent event) {
 
         if(event.getEntityLiving() instanceof ServerPlayerEntity && event.getSource().getTrueSource() instanceof ServerPlayerEntity)
         {
-            Main.NETWORK.sendToServer(new GuildKill(event.getSource().getTrueSource().getName().getString()));
+            Main.proxy.killplayer((ServerPlayerEntity)event.getSource().getTrueSource());
         }
     }
-*/
+
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

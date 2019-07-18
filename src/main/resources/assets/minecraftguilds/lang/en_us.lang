@@ -1,7 +1,0 @@
-# Items
-item.copper_coin.name=Copper Coin
-item.silver_coin.name=Silver Coin
-item.gold_coin.name=Gold Coin
-
-# Blocks
-tile.example.name=ExampleBlock
