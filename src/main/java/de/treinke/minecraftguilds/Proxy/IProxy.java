@@ -27,7 +27,7 @@ public interface IProxy {
 	String getPlayerGuildName(String playerName);
 
 
-	void addClaim(String guild_name,int dim, int x, int z);
+	void addClaim(String guild_name,String dim, int x, int z);
 	
 	boolean acceptGuild(String guild_name, String serverPlayer);
 	

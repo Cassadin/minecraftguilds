@@ -65,7 +65,7 @@ public class Main {
 
     private void onServerStarting(final FMLServerStartingEvent e)
     {
-        GuildCommands.register(e.getCommandDispatcher());
+        //GuildCommands.register(e.getCommandDispatcher());
     }
 
     private void onServerStarted(final FMLServerStartedEvent e) {proxy.serverStarted();};

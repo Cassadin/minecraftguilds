@@ -1,6 +1,7 @@
 package de.treinke.minecraftguilds.GUI;
 
 import com.google.gson.Gson;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.treinke.minecraftguilds.Main;
 import de.treinke.minecraftguilds.network.Messages.*;
 import de.treinke.minecraftguilds.objects.*;
@@ -256,7 +257,7 @@ public class GuildGUI extends Screen {
 
 
     @Override
-    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+    public void render(MatrixStack p_230430_1_, int p_render_1_, int p_render_2_, float p_render_3_) {
         try{
             if(Guild.MyGuild == null)
             {
@@ -268,10 +269,10 @@ public class GuildGUI extends Screen {
                 invite_centery = (height/2)-(invite_height/2);
                 USED_TEXTURES = TEXTURES_INVITE;
                 this.minecraft.getRenderManager().textureManager.bindTexture(USED_TEXTURES);
-                blit(invite_centerx,invite_centery,0,0,invite_width,invite_height);
+                blit(p_230430_1_,invite_centerx,invite_centery,0,0,invite_width,invite_height);
 
-                drawCenteredString(this.font,I18n.format("guild.create_header", new Object[0]),(width/2),invite_centery+5,0xFFFFFF);
-                drawCenteredString(this.font,I18n.format("guild.invites", new Object[0]),(width/2),invite_centery+50,0xFFFFFF);
+                drawCenteredString(p_230430_1_,this.font,I18n.format("guild.create_header", new Object[0]),(width/2),invite_centery+5,0xFFFFFF);
+                drawCenteredString(p_230430_1_,this.font,I18n.format("guild.invites", new Object[0]),(width/2),invite_centery+50,0xFFFFFF);
 
                 int max = Guild.single_user_invites.size();
                 if(max>5)
@@ -279,9 +280,9 @@ public class GuildGUI extends Screen {
 
                 if(max > 0)
                     for(int i = 0; i < max; i++)
-                        drawString(this.font,Guild.single_user_invites.get(i),invite_centerx+10,invite_centery+70+i*20,0xFFFFFF);
+                        drawString(p_230430_1_,this.font,Guild.single_user_invites.get(i),invite_centerx+10,invite_centery+70+i*20,0xFFFFFF);
 
-                text.render(p_render_1_, p_render_2_, p_render_3_);
+                text.render(p_230430_1_,p_render_1_, p_render_2_, p_render_3_);
 
 
             }else {
@@ -310,80 +311,80 @@ public class GuildGUI extends Screen {
                     USED_TEXTURES = TEXTURES_GUILD;
                     this.minecraft.getRenderManager().textureManager.bindTexture(USED_TEXTURES);
 
-                    blit(guild_centerx - guild_tabs, guild_centery, guild_width, 0, guild_tabs+5, 21);
-                    blit(guild_centerx - guild_tabs, guild_centery + 21, guild_width, 0, guild_tabs, 21);
-                    blit(guild_centerx - guild_tabs, guild_centery + 42, guild_width, 0, guild_tabs, 21);
-                    blit(guild_centerx, guild_centery, 0, 0, guild_width, guild_height);
+                    blit(p_230430_1_,guild_centerx - guild_tabs, guild_centery, guild_width, 0, guild_tabs+5, 21);
+                    blit(p_230430_1_,guild_centerx - guild_tabs, guild_centery + 21, guild_width, 0, guild_tabs, 21);
+                    blit(p_230430_1_,guild_centerx - guild_tabs, guild_centery + 42, guild_width, 0, guild_tabs, 21);
+                    blit(p_230430_1_,guild_centerx, guild_centery, 0, 0, guild_width, guild_height);
 
 
                     switch (current_page) {
                         case PAGE_OVERVIEW:
 
 
-                            blit(guild_centerx +65, guild_centery + 69, 165, 31, 10, 10);
-                            blit(guild_centerx +95, guild_centery + 69, 175, 31, 10, 10);
+                            blit(p_230430_1_,guild_centerx +65, guild_centery + 69, 165, 31, 10, 10);
+                            blit(p_230430_1_,guild_centerx +95, guild_centery + 69, 175, 31, 10, 10);
 
                             int money = Guild.MyGuild.cash;
                             String kosten = ""+((Double) Math.ceil((Guild.MyGuild.claims.size() + 1) * (Guild.MyGuild.claims.size() + 1) * Guild.guild_claim_factor)).intValue();
 
 
 
-                            blit(guild_centerx +123+((""+(money/100)).length()-1)*6, guild_centery + 69, 185, 31, 10, 10);
-                            blit(guild_centerx +65+(kosten.length()-1)*6, guild_centery + 84, 185, 31, 10, 10);
+                            blit(p_230430_1_,guild_centerx +123+((""+(money/100)).length()-1)*6, guild_centery + 69, 185, 31, 10, 10);
+                            blit(p_230430_1_,guild_centerx +65+(kosten.length()-1)*6, guild_centery + 84, 185, 31, 10, 10);
 
-                            drawCenteredString(this.font, "Gilde", guild_centerx + 83, guild_centery + 10, 0xFFFFFF);
+                            drawCenteredString(p_230430_1_,this.font, "Gilde", guild_centerx + 83, guild_centery + 10, 0xFFFFFF);
 
                             // Gildeninfos
 
-                            drawString(this.font, "Name: " + Guild.MyGuild.name, guild_centerx + 10, guild_centery + 30, 0xFFFFFF);
-                            drawString(this.font, "Claim", guild_centerx + 10, guild_centery + 45, 0xFFFFFF);
-                            drawString(this.font, "X: " + Guild.MyGuild.claims.get(0).x, guild_centerx + 50, guild_centery + 45, 0xFFFFFF);
-                            drawString(this.font, "Z: " + Guild.MyGuild.claims.get(0).z, guild_centerx + 100, guild_centery + 45, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "Name: " + Guild.MyGuild.name, guild_centerx + 10, guild_centery + 30, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "Claim", guild_centerx + 10, guild_centery + 45, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "X: " + Guild.MyGuild.claims.get(0).x, guild_centerx + 50, guild_centery + 45, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "Z: " + Guild.MyGuild.claims.get(0).z, guild_centerx + 100, guild_centery + 45, 0xFFFFFF);
 
-                            drawString(this.font, "Kasse: ", guild_centerx + 10, guild_centery + 70, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "Kasse: ", guild_centerx + 10, guild_centery + 70, 0xFFFFFF);
 
 
-                            drawCenteredString(this.font, "" + (money / 100), guild_centerx + 120, guild_centery + 70, 0xFFFFFF);
+                            drawCenteredString(p_230430_1_,this.font, "" + (money / 100), guild_centerx + 120, guild_centery + 70, 0xFFFFFF);
                             money = (money) - ((money / 100) * 100);
-                            drawCenteredString(this.font, "" + (money / 10), guild_centerx + 90, guild_centery + 70, 0xFFFFFF);
+                            drawCenteredString(p_230430_1_,this.font, "" + (money / 10), guild_centerx + 90, guild_centery + 70, 0xFFFFFF);
                             money = money % 10;
-                            drawCenteredString(this.font, "" + money, guild_centerx + 60, guild_centery + 70, 0xFFFFFF);
+                            drawCenteredString(p_230430_1_,this.font, "" + money, guild_centerx + 60, guild_centery + 70, 0xFFFFFF);
 
-                            drawString(this.font, "Kosten: ", guild_centerx + 10, guild_centery + 85, 0xFFFFFF);
-                            drawCenteredString(this.font, kosten, guild_centerx + 60, guild_centery + 85, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "Kosten: ", guild_centerx + 10, guild_centery + 85, 0xFFFFFF);
+                            drawCenteredString(p_230430_1_,this.font, kosten, guild_centerx + 60, guild_centery + 85, 0xFFFFFF);
 
-                            drawString(this.font, "Talentmarken: "+Guild.MyGuild.talents, guild_centerx + 10, guild_centery + 100, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "Talentmarken: "+Guild.MyGuild.talents, guild_centerx + 10, guild_centery + 100, 0xFFFFFF);
 
                             break;
                         case PAGE_MEMBERS:
 
                             // Gildenmitglieder
 
-                            drawString(this.font, "GildenLeiter", guild_centerx + 10, guild_centery + 10, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, "GildenLeiter", guild_centerx + 10, guild_centery + 10, 0xFFFFFF);
 
-                            drawString(this.font, Guild.MyGuild.leader, guild_centerx + 30, guild_centery + 22, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.leader, guild_centerx + 30, guild_centery + 22, 0xFFFF80);
 
 
-                            drawString(this.font, "Offiziere", guild_centerx + 10, guild_centery + 38, 0xFFFFFF);
-                            drawString(this.font, Guild.MyGuild.offi[0], guild_centerx + 30, guild_centery + 50, 0xFFFF80);
-                            drawString(this.font, Guild.MyGuild.offi[1], guild_centerx + 30, guild_centery + 60, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, "Offiziere", guild_centerx + 10, guild_centery + 38, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.offi[0], guild_centerx + 30, guild_centery + 50, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.offi[1], guild_centerx + 30, guild_centery + 60, 0xFFFF80);
 
-                            drawString(this.font, "Mitglieder", guild_centerx + 10, guild_centery + 76, 0xFFFFFF);
-                            drawString(this.font, Guild.MyGuild.member[0], guild_centerx + 30, guild_centery + 88, 0xFFFF80);
-                            drawString(this.font, Guild.MyGuild.member[1], guild_centerx + 30, guild_centery + 98, 0xFFFF80);
-                            drawString(this.font, Guild.MyGuild.member[2], guild_centerx + 30, guild_centery + 108, 0xFFFF80);
-                            drawString(this.font, Guild.MyGuild.member[3], guild_centerx + 30, guild_centery + 118, 0xFFFF80);
-                            drawString(this.font, Guild.MyGuild.member[4], guild_centerx + 30, guild_centery + 128, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, "Mitglieder", guild_centerx + 10, guild_centery + 76, 0xFFFFFF);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.member[0], guild_centerx + 30, guild_centery + 88, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.member[1], guild_centerx + 30, guild_centery + 98, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.member[2], guild_centerx + 30, guild_centery + 108, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.member[3], guild_centerx + 30, guild_centery + 118, 0xFFFF80);
+                            drawString(p_230430_1_,this.font, Guild.MyGuild.member[4], guild_centerx + 30, guild_centery + 128, 0xFFFF80);
 
                             if (Guild.MyGuild.leader.equals(this.minecraft.player.getName().getString())) {
                                 if (free_member > 0) {
                                     if(text_invite != null)
-                                        text_invite.render(p_render_1_, p_render_2_, p_render_3_);
+                                        text_invite.render(p_230430_1_,p_render_1_, p_render_2_, p_render_3_);
                                 }
                             }
                             break;
                         case PAGE_MAP:
-                            showClaimMap();
+                            showClaimMap(p_230430_1_);
                             break;
                         default:
                     }
@@ -391,9 +392,11 @@ public class GuildGUI extends Screen {
                     guild_centerx = (width / 2) - (guild_width / 2) + (guild_tabs / 2);
                     guild_centery = (height / 2) - (guild_height / 2);
 
-                    drawCenteredString(this.font, I18n.format("guild.tab.overview", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 7, 0xFFFFFF);
-                    drawCenteredString(this.font, I18n.format("guild.tab.members", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 21 + 7, 0xFFFFFF);
-                    drawCenteredString(this.font, I18n.format("guild.tab.map", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 42 + 7, 0xFFFFFF);
+
+
+                    drawCenteredString(p_230430_1_,this.font, I18n.format("guild.tab.overview", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 7, 0xFFFFFF);
+                    drawCenteredString(p_230430_1_,this.font, I18n.format("guild.tab.members", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 21 + 7, 0xFFFFFF);
+                    drawCenteredString(p_230430_1_,this.font, I18n.format("guild.tab.map", new Object[0]), guild_centerx - (guild_tabs / 2), guild_centery + 42 + 7, 0xFFFFFF);
                 }
             }
         }catch(Exception ex)
@@ -402,7 +405,7 @@ public class GuildGUI extends Screen {
         }
 
         // Buttons
-        super.render(p_render_1_, p_render_2_, p_render_3_);
+        super.render(p_230430_1_,p_render_1_, p_render_2_, p_render_3_);
         init_done = true;
     }
 
@@ -544,19 +547,19 @@ public class GuildGUI extends Screen {
                             final int cx = (Minecraft.getInstance().player.getPosition().getX()) / 16 + (Minecraft.getInstance().player.getPosition().getX() < 0 ? -1 : 0);
                             final int cz = (Minecraft.getInstance().player.getPosition().getZ()) / 16 + (Minecraft.getInstance().player.getPosition().getZ() < 0 ? -1 : 0);
 
-                            int dimen = Minecraft.getInstance().player.dimension.getId();
+                            String dimen = Minecraft.getInstance().player.getEntity().getEntityWorld().func_234923_W_().toString();
 
 
                             boolean res = false;
-                            if (Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz && p.dim == dimen).collect(Collectors.toList()).size() == 0 &&
+                            if (Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz && p.dim.equals(dimen)).collect(Collectors.toList()).size() == 0 &&
                                     Guild.MyGuild.cash >= (((Double) Math.ceil((Guild.MyGuild.claims.size() + 1) * (Guild.MyGuild.claims.size() + 1) * Guild.guild_claim_factor)).intValue() * 100)) {
-                                if (Guild.all_claims.stream().filter(p -> p.x == cx - 1 && p.z == cz && p.guild.equals(Guild.MyGuild.name) && p.dim == dimen).collect(Collectors.toList()).size() == 1)
+                                if (Guild.all_claims.stream().filter(p -> p.x == cx - 1 && p.z == cz && p.guild.equals(Guild.MyGuild.name) && p.dim.equals(dimen)).collect(Collectors.toList()).size() == 1)
                                     res = true;
-                                else if (Guild.all_claims.stream().filter(p -> p.x == cx + 1 && p.z == cz && p.guild.equals(Guild.MyGuild.name) && p.dim == dimen).collect(Collectors.toList()).size() == 1)
+                                else if (Guild.all_claims.stream().filter(p -> p.x == cx + 1 && p.z == cz && p.guild.equals(Guild.MyGuild.name) && p.dim.equals(dimen)).collect(Collectors.toList()).size() == 1)
                                     res = true;
-                                else if (Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz - 1 && p.guild.equals(Guild.MyGuild.name) && p.dim == dimen).collect(Collectors.toList()).size() == 1)
+                                else if (Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz - 1 && p.guild.equals(Guild.MyGuild.name) && p.dim.equals(dimen)).collect(Collectors.toList()).size() == 1)
                                     res = true;
-                                else if (Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz + 1 && p.guild.equals(Guild.MyGuild.name) && p.dim == dimen).collect(Collectors.toList()).size() == 1)
+                                else if (Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz + 1 && p.guild.equals(Guild.MyGuild.name) && p.dim.equals(dimen)).collect(Collectors.toList()).size() == 1)
                                     res = true;
                             }
 
@@ -630,16 +633,16 @@ public class GuildGUI extends Screen {
         return false;
     }
 
-    public void showClaimMap()
+    public void showClaimMap(MatrixStack p_230430_1_)
     {
         final int x = (this.minecraft.player.getPosition().getX()) / 16 + (this.minecraft.player.getPosition().getX() < 0 ? -1 : 0);
         final int z = (this.minecraft.player.getPosition().getZ()) / 16 + (this.minecraft.player.getPosition().getZ() < 0 ? -1 : 0);
-        final int dim = this.minecraft.player.dimension.getId();
+        final String dim = this.minecraft.player.getEntity().getEntityWorld().func_234923_W_().toString();
 
         final int dir_x = 13;
         final int dir_z = 15;
 
-        List<Claim> claims = Guild.all_claims.stream().filter(p -> p.x >= x-dir_x && p.x <= x+dir_x && p.z >= z-dir_z && p.z <= z+dir_z && p.dim == dim).collect(Collectors.toList());
+        List<Claim> claims = Guild.all_claims.stream().filter(p -> p.x >= x-dir_x && p.x <= x+dir_x && p.z >= z-dir_z && p.z <= z+dir_z && p.dim.equals(dim)).collect(Collectors.toList());
 
         for(int fz = 0; fz < 29; fz++)
             for(int fx = 0; fx < 25; fx++)
@@ -650,15 +653,15 @@ public class GuildGUI extends Screen {
                 Object[] arr = claims.stream().filter(p -> p.x == ffx && p.z == ffz).toArray();
                 if(arr.length > 0) {
                     if (((Claim) arr[0]).guild.equals(Guild.MyGuild.name))
-                        blit(guild_centerx + 7+(fx*6), guild_centery + 3+(fz*6), 209, 21, 7, 7);
+                        blit(p_230430_1_,guild_centerx + 7+(fx*6), guild_centery + 3+(fz*6), 209, 21, 7, 7);
                     else
-                        blit(guild_centerx+7+(fx*6), guild_centery+3+(fz*6), 202, 21, 7, 7);
+                        blit(p_230430_1_,guild_centerx+7+(fx*6), guild_centery+3+(fz*6), 202, 21, 7, 7);
                 }else
-                    blit(guild_centerx+7+(fx*6), guild_centery+3+(fz*6), 195, 21, 7, 7);
+                    blit(p_230430_1_,guild_centerx+7+(fx*6), guild_centery+3+(fz*6), 195, 21, 7, 7);
 
             }
 
-        blit(guild_centerx+79, guild_centery+87, 216, 21, 7, 7);
+        blit(p_230430_1_,guild_centerx+79, guild_centery+87, 216, 21, 7, 7);
 
 
 

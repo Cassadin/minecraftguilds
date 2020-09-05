@@ -69,9 +69,9 @@ public class GuildClaimList{
             Guild.all_claims = new Gson().fromJson(message.data, new TypeToken<List<Claim>>() {}.getType());
             final int cx = (Minecraft.getInstance().player.getPosition().getX()) / 16 + (Minecraft.getInstance().player.getPosition().getX() < 0 ? -1 : 0);
             final int cz = (Minecraft.getInstance().player.getPosition().getZ()) / 16 + (Minecraft.getInstance().player.getPosition().getZ() < 0 ? -1 : 0);
-            int dimen = Minecraft.getInstance().player.dimension.getId();
+            String dimen = Minecraft.getInstance().player.getEntity().getEntityWorld().func_234923_W_().toString();
 
-            Object[] arr = Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz && p.dim == dimen).toArray();
+            Object[] arr = Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz && p.dim.equals(dimen)).toArray();
             if(arr.length > 0)
                 Guild.current_claim_owner = ((Claim)arr[0]).guild;
 

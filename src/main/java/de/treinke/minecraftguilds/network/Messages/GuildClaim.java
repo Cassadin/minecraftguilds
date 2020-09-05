@@ -65,7 +65,7 @@ public class GuildClaim{
             final int x = (ctx.get().getSender().getPosition().getX())/16+(ctx.get().getSender().getPosition().getX()<0?-1:0);
             final int z = (ctx.get().getSender().getPosition().getZ())/16+(ctx.get().getSender().getPosition().getZ()<0?-1:0);
 
-            Main.proxy.addClaim(message.data,ctx.get().getSender().dimension.getId(),x,z);
+            Main.proxy.addClaim(message.data,ctx.get().getSender().getEntity().getEntityWorld().func_234923_W_().toString(),x,z);
         }
     }
 }

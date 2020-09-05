@@ -12,6 +12,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -44,9 +46,10 @@ public class ClaimEvents {
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
         final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
-        final int dim = event.getEntityPlayer().dimension.getId();
+        final String dim  = event.getPlayer().getEntityWorld().func_234923_W_().toString();
 
-        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim == dim).collect(Collectors.toList());
+
+        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
         if(lst.size() > 0)
         {
             if(!lst.get(0).guild.equals(Main.proxy.getPlayerGuildName(event.getEntity().getName().getString())))
@@ -73,9 +76,9 @@ public class ClaimEvents {
     {
         final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
         final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
-        final int dim = event.getEntityPlayer().dimension.getId();
+        final String dim = event.getPlayer().getEntityWorld().func_234923_W_().toString();
 
-        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim == dim).collect(Collectors.toList());
+        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
         if(lst.size() > 0)
         {
             boolean slow_down  = false;
@@ -107,9 +110,9 @@ public class ClaimEvents {
     public void onBreakEvent(BlockEvent.BreakEvent event) {
         final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
         final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
-        final int dim = event.getPlayer().dimension.getId();
+        final String dim = event.getPlayer().getEntityWorld().func_234923_W_().toString();
 
-        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim == dim).collect(Collectors.toList());
+        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
         if(lst.size() > 0)
         {
             String playerguild = Main.proxy.getPlayerGuildName(event.getPlayer().getName().getString());
@@ -129,10 +132,10 @@ public class ClaimEvents {
 
         final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
         final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
-        final int dim = event.getEntity().dimension.getId();
+        final String dim = event.getEntity().getEntityWorld().func_234923_W_().toString();
 
         if(event.getEntity() instanceof ServerPlayerEntity) {
-            List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim == dim).collect(Collectors.toList());
+            List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
             if (lst.size() > 0) {
                 if (!lst.get(0).guild.equals(Main.proxy.getPlayerGuildName(event.getEntity().getName().getString())))
                     event.setCanceled(true);
@@ -146,9 +149,9 @@ public class ClaimEvents {
 
         int x = chunk_x;
         int z = chunk_z;
-        int dim = player.dimension.getId();
+        String dim = player.getEntity().getEntityWorld().func_234923_W_().toString();
 
-        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim == dim).collect(Collectors.toList());
+        List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
         if(lst.size() > 0)
         {
             if(!lst.get(0).guild.equals(Guild.current_claim_owner)||force)
@@ -161,20 +164,31 @@ public class ClaimEvents {
 
                 if(own)
                 {
-                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.enter.save", new Object[0])));
+                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.enter.save", new Object[0])),player.getUniqueID());
                     if(		player.inventory.hasItemStack(new ItemStack(GuildItems.COPPER_COIN))||
                             player.inventory.hasItemStack(new ItemStack(GuildItems.SILVER_COID))||
                             player.inventory.hasItemStack(new ItemStack(GuildItems.GOLD_COIN)))
                     {
-                        player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.COPPER_COIN,-1);
-                        player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.SILVER_COID,-1);
-                        player.inventory.clearMatchingItems(p -> p.getItem() == GuildItems.GOLD_COIN,-1);
+                        System.out.println("REMOVE_COINS");
 
+                        NonNullList<ItemStack> itemlist = player.inventory.mainInventory;
+
+                        for(int i = 0; i < itemlist.size(); i++)
+                        {
+                            if(       itemlist.get(i).getItem() == GuildItems.COPPER_COIN
+                                    ||itemlist.get(i).getItem() == GuildItems.SILVER_COID
+                                    ||itemlist.get(i).getItem() == GuildItems.GOLD_COIN)
+                            {
+                                itemlist.get(i).setCount(0);
+                            }
+                        }
                         Main.NETWORK.sendToServer(new GuildDonation());
                     }
                 }
                 else {
-                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.enter.danger", lst.get(0).guild)).setStyle(new Style().setBold(true).setColor(TextFormatting.RED)));
+                    Style s = Style.EMPTY;
+                    s = s.setColor(Color.func_240745_a_("#FF0000"));
+                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.enter.danger", lst.get(0).guild)).setStyle(s),player.getUniqueID());
                 }
             }
         }else {
@@ -186,9 +200,9 @@ public class ClaimEvents {
                         own = true;
 
                 if(own)
-                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.leave.save", new Object[0])));
+                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.leave.save", new Object[0])),player.getUniqueID());
                 else {
-                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.leave.danger",  Guild.current_claim_owner)));
+                    player.sendMessage(new StringTextComponent(I18n.format("guild.claim.leave.danger",  Guild.current_claim_owner)),player.getUniqueID());
                 }
                 Guild.current_claim_owner = "";
             }
@@ -221,7 +235,7 @@ public class ClaimEvents {
 
                     final int x = (player.getPosition().getX()) / 16 + (player.getPosition().getX() < 0 ? -1 : 0);
                     final int z = (player.getPosition().getZ()) / 16 + (player.getPosition().getZ() < 0 ? -1 : 0);
-                    final int dim = player.dimension.getId();
+                    final String dim = player.getEntity().getEntityWorld().func_234923_W_().toString();
 
                     String attacked_guild = Main.proxy.getPlayerGuildName(player.getName().getString());
                     String attacker_guild = Main.proxy.getPlayerGuildName(caused.getName().getString());
@@ -238,7 +252,7 @@ public class ClaimEvents {
                             attacker_guild = "";
                     }
 
-                    List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim == dim).collect(Collectors.toList());
+                    List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
                     String claimowner = null;
                     if (lst.size() > 0)
                         claimowner = lst.get(0).guild;

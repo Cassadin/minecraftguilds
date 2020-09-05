@@ -49,6 +49,6 @@ Collect coins and claim your Land.
 [[dependencies.minecraftguilds]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14.2,1.14.3]"
+    versionRange="[1.16.1]"
     ordering="NONE"
     side="BOTH"

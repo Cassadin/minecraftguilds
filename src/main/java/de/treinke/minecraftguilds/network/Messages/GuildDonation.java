@@ -8,7 +8,9 @@ import de.treinke.minecraftguilds.Main;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.objects.Guild;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,14 +64,39 @@ public class GuildDonation{
     public static class Handler {
         public static void handle(GuildDonation message, Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(new Runnable() {
-                @Override
-                public void run() {
-                    int amount = ctx.get().getSender().inventory.clearMatchingItems(p -> p.getItem() == GuildItems.COPPER_COIN,-1);
-                    amount += ctx.get().getSender().inventory.clearMatchingItems(p -> p.getItem() == GuildItems.SILVER_COID,-1)*10;
-                    amount += ctx.get().getSender().inventory.clearMatchingItems(p -> p.getItem() == GuildItems.GOLD_COIN,-1)*100;
-                    Main.proxy.playerdonateGuild(ctx.get().getSender().getName().getString(),amount);
+            ctx.get().enqueueWork(() -> {
+
+                int amount = 0;
+
+                NonNullList<ItemStack> itemlist = ctx.get().getSender().inventory.mainInventory;
+
+                for(int i = 0; i < itemlist.size(); i++)
+                {
+                    if(itemlist.get(i).getItem() == GuildItems.COPPER_COIN)
+                    {
+                        amount += itemlist.get(i).getCount();
+                        itemlist.get(i).setCount(0);
+                    }
+                    if(itemlist.get(i).getItem() == GuildItems.SILVER_COID)
+                    {
+                        amount += itemlist.get(i).getCount()*10;
+                        itemlist.get(i).setCount(0);
+                    }
+                    if(itemlist.get(i).getItem() == GuildItems.GOLD_COIN)
+                    {
+                        amount += itemlist.get(i).getCount()*100;
+                        itemlist.get(i).setCount(0);
+                    }
+
                 }
+
+
+                /*
+                int amount = ctx.get().getSender().inventory.func_234564_a_(p -> p.getItem() == GuildItems.COPPER_COIN,0,ctx.get().getSender().inventory);
+                amount += ctx.get().getSender().inventory.func_234564_a_(p -> p.getItem() == GuildItems.SILVER_COID,0,ctx.get().getSender().inventory)*10;
+                amount += ctx.get().getSender().inventory.func_234564_a_(p -> p.getItem() == GuildItems.GOLD_COIN,0,ctx.get().getSender().inventory)*100;
+                 */
+                Main.proxy.playerdonateGuild(ctx.get().getSender().getName().getString(),amount);
             });
         }
     }

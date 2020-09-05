@@ -98,7 +98,7 @@ public class ClientProxy implements IProxy {
 	}
 
 	@Override
-	public void addClaim(String guild_name,int dim, int x, int z) {
+	public void addClaim(String guild_name,String dim, int x, int z) {
 		// TODO Auto-generated method stub
 
 	}

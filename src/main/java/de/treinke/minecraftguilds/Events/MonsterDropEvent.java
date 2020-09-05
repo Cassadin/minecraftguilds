@@ -45,9 +45,9 @@ public class MonsterDropEvent {
                 if (drop != null) {
                     final int x = (event.getEntityLiving().getPosition().getX()) / 16 + (event.getEntityLiving().getPosition().getX() < 0 ? -1 : 0);
                     final int z = (event.getEntityLiving().getPosition().getZ()) / 16 + (event.getEntityLiving().getPosition().getZ() < 0 ? -1 : 0);
-                    final int dim = event.getEntityLiving().dimension.getId();
+                    final String dim = event.getEntity().getEntityWorld().func_234923_W_().toString();
 
-                    List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim == dim).collect(Collectors.toList());
+                    List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
                     if (lst.size() > 0) {
                         if (drop == GuildItems.GOLD_COIN) // 0.5% Chance auf eine Goldene Münze
                             Main.proxy.donateGuild(lst.get(0).guild, 100);

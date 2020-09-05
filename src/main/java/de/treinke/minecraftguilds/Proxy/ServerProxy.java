@@ -24,10 +24,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.*;
 import net.minecraft.network.play.server.SChatPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -105,8 +102,9 @@ public class ServerProxy implements IProxy {
 		return g;
 	}
 
+
 	@Override
-	public void addClaim(String guild_name,int dim, int x, int z) {
+	public void addClaim(String guild_name,String dim, int x, int z) {
 		int index = findGuildIndex(guild_name);
 
 		if(index > -1)
@@ -504,18 +502,16 @@ public class ServerProxy implements IProxy {
 		String guild_name = getPlayerGuildName(username);
 
 		StringTextComponent parent = new StringTextComponent("");
-		parent.appendSibling(new StringTextComponent(username+": ").setStyle(new Style().setColor(TextFormatting.GREEN).setBold(true)));
-		parent.appendSibling(new StringTextComponent(msg).setStyle(new Style().setColor(TextFormatting.GREEN)));
+		parent.append(new StringTextComponent(username+": ").setStyle(Style.EMPTY.setColor(Color.func_240745_a_("#00FF00")).setBold(true)));
+		parent.append(new StringTextComponent(msg).setStyle(Style.EMPTY.setColor(Color.func_240745_a_("#00FF00"))));
 
 
-		this.SERVER.sendMessage(parent);
-		SChatPacket packetIn = new SChatPacket(parent, ChatType.CHAT);
 
 		List<ServerPlayerEntity> players = this.SERVER.getPlayerList().getPlayers();
 
 		for(int i = 0; i < players.size(); ++i) {
 			if(getPlayerGuildName((players.get(i)).getName().getString()).equals(guild_name))
-				(players.get(i)).connection.sendPacket(packetIn);
+				(players.get(i)).sendMessage(parent,players.get(i).getUniqueID());
 		}
 	}
 

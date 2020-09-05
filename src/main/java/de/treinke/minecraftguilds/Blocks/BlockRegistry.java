@@ -39,7 +39,7 @@ public class BlockRegistry {
         e.getRegistry().register(new BlockItem(block, new Item.Properties().group(GuildTab.MOD_ITEM_GROUP)) {
             @Override
             public ITextComponent getDisplayName(ItemStack stack) {
-                return getBlock().getNameTextComponent();
+                return getBlock().getTranslatedName();
             }
         }.setRegistryName(block.getRegistryName()));
     }

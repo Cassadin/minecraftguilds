@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -12,6 +13,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -62,7 +65,11 @@ public class GuildWarning {
     public static class Handler {
         public static void handle(GuildWarning message, Supplier<NetworkEvent.Context> ctx)
         {
-            Minecraft.getInstance().player.sendMessage(new StringTextComponent(I18n.format("guild.claim.attacked", new String[]{})).setStyle(new Style().setBold(true).setColor(TextFormatting.RED)));
+
+            Style s = Style.EMPTY;
+            s.setColor(Color.func_240745_a_("#FF0000"));
+
+            Minecraft.getInstance().player.sendMessage(new StringTextComponent(I18n.format("guild.claim.attacked", new String[]{})).setStyle(s),Minecraft.getInstance().player.getUniqueID());
         }
     }
 }

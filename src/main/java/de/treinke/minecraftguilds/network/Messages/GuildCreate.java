@@ -65,7 +65,7 @@ public class GuildCreate{
 
             Guild.list.add(new Guild(message.data,player.getName().getString()));
 
-            Main.proxy.addClaim(message.data,player.dimension.getId(),(player.getPosition().getX())/16+(player.getPosition().getX()<0?-1:0),(player.getPosition().getZ())/16+(player.getPosition().getZ()<0?-1:0));
+            Main.proxy.addClaim(message.data,player.getEntity().getEntityWorld().func_234923_W_().toString(),(player.getPosition().getX())/16+(player.getPosition().getX()<0?-1:0),(player.getPosition().getZ())/16+(player.getPosition().getZ()<0?-1:0));
 
             Main.NETWORK.sendTo(new GuildCheckAnswer(Main.proxy.getPlayerGuild(player.getName().getString())),player);
 
