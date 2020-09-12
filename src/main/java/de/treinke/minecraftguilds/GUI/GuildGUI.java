@@ -426,6 +426,7 @@ public class GuildGUI extends Screen {
                 case BTN_CREATE:
                     String Gildenname = text.getText();
                     Main.NETWORK.sendToServer(new GuildCreate(Gildenname));
+                    Minecraft.getInstance().player.closeScreen();
                     break;
                 case BTN_ACCEPT:
                     Main.NETWORK.sendToServer(new GuildAccept(invite_accepts.get(button)));

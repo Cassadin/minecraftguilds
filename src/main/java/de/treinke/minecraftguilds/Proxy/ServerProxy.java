@@ -164,8 +164,8 @@ public class ServerProxy implements IProxy {
 			}
 		}
 	}
-	
-	
+
+
 	private void refresh_all_claims() {
 		String claims = new Gson().toJson(Main.proxy.getGuildClaims(),new TypeToken<List<Claim>>() {}.getType());
 
@@ -229,6 +229,11 @@ public class ServerProxy implements IProxy {
 	}
 
 	@Override
+	public void open_gui() {
+
+	}
+
+	@Override
 	public void warnGuild(String name) {
 		int index = findGuildIndex(name);
 		if(index > -1) {
@@ -274,8 +279,8 @@ public class ServerProxy implements IProxy {
 		System.out.println(Guild.list.size()+" Guilds found");
 
 	}
-	
-	
+
+
 	@Override
 	public boolean acceptGuild(String guild_name, String serverPlayer) {
 // Gilde Suchen und member hinzufügen;

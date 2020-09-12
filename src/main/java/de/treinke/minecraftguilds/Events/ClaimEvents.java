@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
@@ -36,6 +37,8 @@ import java.util.stream.Collectors;
 
 import static de.treinke.minecraftguilds.Main.MODID;
 
+
+
 public class ClaimEvents {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
@@ -44,9 +47,21 @@ public class ClaimEvents {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-        final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
-        final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
+
+        int posx = event.getPos().getX();
+        int posz = event.getPos().getZ();
+
+        String dir = event.getFace().getName2();
+        System.out.println("direction: "+dir);
+        if(dir.equals(Direction.EAST.getName2()))
+        {
+
+        }
+
+        final int x = (posx)/16+(posx<0?-1:0);
+        final int z = (posz)/16+(posz<0?-1:0);
         final String dim  = event.getPlayer().getEntityWorld().func_234923_W_().toString();
+
 
 
         List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
@@ -111,6 +126,8 @@ public class ClaimEvents {
         final int x = (event.getPos().getX())/16+(event.getPos().getX()<0?-1:0);
         final int z = (event.getPos().getZ())/16+(event.getPos().getZ()<0?-1:0);
         final String dim = event.getPlayer().getEntityWorld().func_234923_W_().toString();
+        System.out.println(x+"/"+z);
+        System.out.println("dim: "+event.getPlayer().getEntityWorld().func_234923_W_().getRegistryName().toString());
 
         List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x==x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
         if(lst.size() > 0)

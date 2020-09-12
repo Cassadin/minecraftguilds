@@ -34,11 +34,11 @@ public class MonsterDropEvent {
 
             if (event.getEntityLiving() instanceof MonsterEntity) {
                 Item drop = null;
-                if (chance <= 5) // 0.5% Chance auf eine Goldene Münze
+                if (chance <= 10) // 1% Chance auf eine Goldene Münze
                     drop = GuildItems.GOLD_COIN;
-                else if (chance <= 100) // 10% Chance auf eine Silberne Münze
+                else if (chance <= 50) // 5% Chance auf eine Silberne Münze
                     drop = GuildItems.SILVER_COID;
-                else if (chance <= 900) // 90% Chance auf eine Kupferne Münze
+                else if (chance <= 750) // 75% Chance auf eine Kupferne Münze
                     drop = GuildItems.COPPER_COIN;
 
 
@@ -49,11 +49,11 @@ public class MonsterDropEvent {
 
                     List<Claim> lst = Guild.all_claims.stream().filter(p -> p.x == x && p.z == z && p.dim.equals(dim)).collect(Collectors.toList());
                     if (lst.size() > 0) {
-                        if (drop == GuildItems.GOLD_COIN) // 0.5% Chance auf eine Goldene Münze
+                        if (drop == GuildItems.GOLD_COIN)
                             Main.proxy.donateGuild(lst.get(0).guild, 100);
-                        else if (drop == GuildItems.SILVER_COID) // 10% Chance auf eine Silberne Münze
+                        else if (drop == GuildItems.SILVER_COID)
                             Main.proxy.donateGuild(lst.get(0).guild, 10);
-                        else if (drop == GuildItems.COPPER_COIN) // 90% Chance auf eine Kupferne Münze
+                        else if (drop == GuildItems.COPPER_COIN)
                             Main.proxy.donateGuild(lst.get(0).guild, 1);
 
                     }else{

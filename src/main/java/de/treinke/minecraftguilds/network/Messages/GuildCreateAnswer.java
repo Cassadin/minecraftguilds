@@ -3,6 +3,7 @@ package de.treinke.minecraftguilds.network.Messages;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import de.treinke.minecraftguilds.GUI.GuildGUI;
+import de.treinke.minecraftguilds.Main;
 import de.treinke.minecraftguilds.objects.Guild;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketBuffer;
@@ -14,17 +15,17 @@ import java.util.function.Supplier;
 
 import static de.treinke.minecraftguilds.Main.MODID;
 
-public class GuildCheckAnswer{
+public class GuildCreateAnswer{
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
     // A default constructor is always required
-    public GuildCheckAnswer(){
+    public GuildCreateAnswer(){
     }
 
 
     public String data = "";
 
-    public GuildCheckAnswer(String toSend) {
+    public GuildCreateAnswer(String toSend) {
         if(this.data != null)
             this.data = toSend;
     }
@@ -44,30 +45,30 @@ public class GuildCheckAnswer{
     }
 
 
-    public static void encode(GuildCheckAnswer message, PacketBuffer packet)
+    public static void encode(GuildCreateAnswer message, PacketBuffer packet)
     {
         message.toBytes(packet);
     }
 
-    public static GuildCheckAnswer decode(PacketBuffer packet)
+    public static GuildCreateAnswer decode(PacketBuffer packet)
     {
-        GuildCheckAnswer message = new GuildCheckAnswer();
+        GuildCreateAnswer message = new GuildCreateAnswer();
         message.fromBytes(packet);
         return message;
     }
 
 
     public static class Handler {
-        public static void handle(GuildCheckAnswer message, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(GuildCreateAnswer message, Supplier<NetworkEvent.Context> ctx)
         {
             if(message.data.length() > 0 && message.data != null)
             {
                 Guild.MyGuild = new Gson().fromJson(message.data,new TypeToken<Guild>() {}.getType());
                 GuildGUI.refreshed = false;
+                Main.proxy.open_gui();
             }else {
                 Guild.MyGuild = null;
             }
-
         }
     }
 }

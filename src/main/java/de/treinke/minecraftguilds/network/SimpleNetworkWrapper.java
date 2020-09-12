@@ -38,6 +38,7 @@ public class SimpleNetworkWrapper {
         net.registerMessage(ID++, GuildClaim.class, GuildClaim::encode, GuildClaim::decode, GuildClaim.Handler::handle);
         net.registerMessage(ID++, GuildClaimList.class, GuildClaimList::encode, GuildClaimList::decode, GuildClaimList.Handler::handle);
         net.registerMessage(ID++, GuildCreate.class, GuildCreate::encode, GuildCreate::decode, GuildCreate.Handler::handle);
+        net.registerMessage(ID++, GuildCreateAnswer.class, GuildCreateAnswer::encode, GuildCreateAnswer::decode, GuildCreateAnswer.Handler::handle);
         net.registerMessage(ID++, GuildDemote.class, GuildDemote::encode, GuildDemote::decode, GuildDemote.Handler::handle);
         net.registerMessage(ID++, GuildDonation.class, GuildDonation::encode, GuildDonation::decode, GuildDonation.Handler::handle);
         net.registerMessage(ID++, GuildInvites.class, GuildInvites::encode, GuildInvites::decode, GuildInvites.Handler::handle);

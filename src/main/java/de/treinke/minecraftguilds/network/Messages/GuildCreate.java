@@ -1,20 +1,18 @@
 package de.treinke.minecraftguilds.network.Messages;
 
-        import com.google.gson.Gson;
-        import com.google.gson.reflect.TypeToken;
-        import de.treinke.minecraftguilds.*;
-        import de.treinke.minecraftguilds.objects.Guild;
-        import io.netty.buffer.ByteBuf;
-        import net.minecraft.entity.player.ServerPlayerEntity;
-        import net.minecraft.network.PacketBuffer;
-        import net.minecraftforge.fml.network.NetworkEvent;
-        import org.apache.logging.log4j.LogManager;
-        import org.apache.logging.log4j.Logger;
-        import org.apache.logging.log4j.core.jmx.Server;
 
-        import java.util.function.Supplier;
+    import de.treinke.minecraftguilds.*;
+    import de.treinke.minecraftguilds.objects.Guild;
+    import io.netty.buffer.ByteBuf;
+    import net.minecraft.entity.player.ServerPlayerEntity;
+    import net.minecraft.network.PacketBuffer;
+    import net.minecraftforge.fml.network.NetworkEvent;
+    import org.apache.logging.log4j.LogManager;
+    import org.apache.logging.log4j.Logger;
 
-        import static de.treinke.minecraftguilds.Main.MODID;
+    import java.util.function.Supplier;
+
+    import static de.treinke.minecraftguilds.Main.MODID;
 
 public class GuildCreate{
     public static final Logger LOGGER = LogManager.getLogger(MODID);
@@ -66,8 +64,8 @@ public class GuildCreate{
             Guild.list.add(new Guild(message.data,player.getName().getString()));
 
             Main.proxy.addClaim(message.data,player.getEntity().getEntityWorld().func_234923_W_().toString(),(player.getPosition().getX())/16+(player.getPosition().getX()<0?-1:0),(player.getPosition().getZ())/16+(player.getPosition().getZ()<0?-1:0));
+            Main.NETWORK.sendTo(new GuildCreateAnswer(Main.proxy.getPlayerGuild(player.getName().getString())),player);
 
-            Main.NETWORK.sendTo(new GuildCheckAnswer(Main.proxy.getPlayerGuild(player.getName().getString())),player);
 
         }
     }

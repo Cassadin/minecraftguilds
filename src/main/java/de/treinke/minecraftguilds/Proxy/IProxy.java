@@ -73,4 +73,6 @@ public interface IProxy {
     void warnGuild(String message);
 
 	void killplayer(ServerPlayerEntity player);
+
+    void open_gui();
 }

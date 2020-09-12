@@ -3,6 +3,7 @@ package de.treinke.minecraftguilds.Proxy;
 import com.mojang.brigadier.CommandDispatcher;
 import de.treinke.minecraftguilds.Events.KeyPressEvent;
 import de.treinke.minecraftguilds.Events.MonsterDropEvent;
+import de.treinke.minecraftguilds.GUI.GuildGUI;
 import de.treinke.minecraftguilds.objects.Claim;
 import de.treinke.minecraftguilds.Events.ClaimEvents;
 import de.treinke.minecraftguilds.objects.Guild;
@@ -170,6 +171,12 @@ public class ClientProxy implements IProxy {
 	@Override
 	public void killplayer(ServerPlayerEntity player) {
 
+	}
+
+	@Override
+	public void open_gui() {
+		Minecraft.getInstance().displayGuiScreen(new GuildGUI());
+		showClaimMessage(true);
 	}
 
 	@Override

@@ -71,11 +71,15 @@ public class GuildClaimList{
             final int cz = (Minecraft.getInstance().player.getPosition().getZ()) / 16 + (Minecraft.getInstance().player.getPosition().getZ() < 0 ? -1 : 0);
             String dimen = Minecraft.getInstance().player.getEntity().getEntityWorld().func_234923_W_().toString();
 
+            String owner = Guild.current_claim_owner;
+
             Object[] arr = Guild.all_claims.stream().filter(p -> p.x == cx && p.z == cz && p.dim.equals(dimen)).toArray();
             if(arr.length > 0)
                 Guild.current_claim_owner = ((Claim)arr[0]).guild;
 
-            Main.proxy.showClaimMessage(true);
+            if(!owner.equals(Guild.current_claim_owner)) {
+                Main.proxy.showClaimMessage(true);
+            }
             GuildGUI.refreshed = false;
         }
     }

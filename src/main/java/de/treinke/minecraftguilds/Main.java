@@ -1,19 +1,13 @@
 package de.treinke.minecraftguilds;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.treinke.minecraftguilds.Blocks.BlockRegistry;
-import de.treinke.minecraftguilds.Commands.GuildCommands;
 import de.treinke.minecraftguilds.Items.ItemRegistry;
+import de.treinke.minecraftguilds.network.Messages.GuildCreateAnswer;
 import de.treinke.minecraftguilds.network.SimpleNetworkWrapper;
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandSource;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.PickaxeItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -22,7 +16,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.treinke.minecraftguilds.Proxy.*;
